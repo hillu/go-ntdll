@@ -154,12 +154,13 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 				p := FunctionParameterDefinition{Name: tokens[0]}
 				for _, t := range tokens[1:] {
 					switch t {
-					case "_In_":
+					case "_In_", "_In_opt_":
 						p.Direction = DirectionIn
 					case "_Out_", "_Out_opt_":
 						p.Direction = DirectionOut
 					case "_Inout_":
 						p.Direction = DirectionInOut
+					case "_Reserved_":
 					default:
 						p.Type = t
 					}
