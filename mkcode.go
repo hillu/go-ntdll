@@ -329,7 +329,7 @@ package %s
 funcs:
 	for _, function := range functions {
 		for _, param := range function.Params {
-			if param.Type == "bool" {
+			if param.Type[0] == '*' {
 				fmt.Fprintln(buf, `import "unsafe"`)
 				break funcs
 			}
