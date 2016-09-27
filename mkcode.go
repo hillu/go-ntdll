@@ -21,6 +21,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/scanner"
 )
@@ -277,10 +278,126 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 	return &sd, nil
 }
 
+type EnumMemberDefinition struct {
+	Name  string
+	Value uint32
+}
+
+type EnumDefinition struct {
+	Name    string
+	Members []EnumMemberDefinition
+}
+
+// ParseEnumDefinition is a half-arsed parser for C enum definitions
+// as found in MSDN documentation for NTDLL / Windows Driver types.
+//
+// Example:
+//
+// typedef enum _KEY_VALUE_INFORMATION_CLASS {
+//   KeyValueBasicInformation           = 0,
+//   KeyValueFullInformation,
+//   KeyValuePartialInformation,
+//   KeyValueFullInformationAlign64,
+//   KeyValuePartialInformationAlign64,
+//   MaxKeyValueInfoClass
+// } KEY_VALUE_INFORMATION_CLASS;
+func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
+	s := &scanner.Scanner{Mode: scanner.GoTokens}
+	s.Init(rd)
+	state := StateInit
+	var ed EnumDefinition
+	var name string
+	var lastval uint32
+	for {
+		r := s.Scan()
+		if r == scanner.EOF {
+			break
+		}
+		switch state {
+		case StateInit:
+			e := fmt.Errorf("expecting typedef enum _X {")
+			if r != scanner.Ident || s.TokenText() != "typedef" {
+				return nil, e
+			}
+			if r = s.Scan(); r != scanner.Ident || s.TokenText() != "enum" {
+				return nil, e
+			}
+			if r = s.Scan(); r != scanner.Ident || !strings.HasPrefix(s.TokenText(), "_") {
+				return nil, e
+			}
+			name = s.TokenText()[1:]
+			ed.Name = translate(name)
+			if r = s.Scan(); r != '{' {
+				return nil, e
+			}
+			state = StateMember
+		case StateMember:
+			if r == '}' {
+				state = StateExit
+				continue
+			}
+			if r != scanner.Ident {
+				return nil, fmt.Errorf("%s: expecting name, got '%s'", name, s.TokenText())
+			}
+			m := EnumMemberDefinition{Name: s.TokenText()}
+			if r = s.Scan(); r == '=' {
+				if r = s.Scan(); r != scanner.Int {
+					return nil, fmt.Errorf("%s: expecting int, got '%s'", name, s.TokenText())
+				}
+				v, err := strconv.Atoi(s.TokenText())
+				if err != nil {
+					return nil, err
+				}
+				lastval = uint32(v)
+				m.Value = uint32(v)
+				r = s.Scan()
+			} else if r == ',' || r == '}' {
+				lastval++
+				m.Value = lastval
+			} else {
+				return nil, fmt.Errorf("%s: expecting enum value or ellipsis, got '%s'", name, s.TokenText())
+			}
+			if r == ',' || r == '}' {
+				ed.Members = append(ed.Members, m)
+			} else {
+				return nil, fmt.Errorf("%s: Expecting ',' or '}', got '%s'", name, s.TokenText())
+			}
+			if r == '}' {
+				state = StateExit
+			}
+		case StateExit:
+			if r == ';' {
+				state = StateInit
+				break
+			}
+			var typ string
+			if r == '*' {
+				typ = "*"
+				r = s.Scan()
+			}
+			if r != scanner.Ident {
+				return nil, fmt.Errorf("expecting type def, got '%s'", r)
+			}
+			typ += s.TokenText()
+			if strings.HasPrefix(typ, "*P") {
+				typ = typ[2:]
+			}
+			if typ != name {
+				return nil, fmt.Errorf("expecting type %s, got %s", name, typ)
+			}
+			if s.Peek() == ',' {
+				s.Scan()
+			}
+		}
+	}
+	return &ed, nil
+}
+
 func main() {
 	var outfile string
 	var functions []FunctionDefinition
 	var structs []StructDefinition
+	var enums []EnumDefinition
 	flag.StringVar(&outfile, "output", "", "output file")
 	flag.Parse()
 	if flag.NArg() != 1 {
@@ -316,6 +433,13 @@ func main() {
 				log.Fatal(err)
 			}
 			structs = append(structs, *s)
+		} else if strings.HasPrefix(comment, "enum:") {
+			comment = comment[5:]
+			e, err := ParseEnumDefinition(strings.NewReader(comment))
+			if err != nil {
+				log.Fatal(err)
+			}
+			enums = append(enums, *e)
 		}
 	}
 	f.Close()
@@ -335,6 +459,18 @@ funcs:
 				break funcs
 			}
 		}
+	}
+
+	for _, enum := range enums {
+		fmt.Fprintf(buf, "type %s uint32; const (\n", enum.Name)
+		for i, member := range enum.Members {
+			if i == 0 {
+				fmt.Fprintf(buf, "%s %s = %d\n", member.Name, enum.Name, member.Value)
+			} else {
+				fmt.Fprintf(buf, "%s = %d\n", member.Name, member.Value)
+			}
+		}
+		fmt.Fprint(buf, ")\n")
 	}
 
 	fmt.Fprintln(buf, "var (")
