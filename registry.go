@@ -142,7 +142,7 @@ typedef struct _IO_STATUS_BLOCK {
 
 type IoStatusBlock struct {
 	StatusPointer uintptr
-	Invormation   uintptr
+	Information   uintptr
 }
 
 /*
