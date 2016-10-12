@@ -23,7 +23,7 @@ type ObjectAttributes struct {
 	SecurityQualityOfService *byte
 }
 
-type ObjectDirectoryInformation struct {
+type ObjectDirectoryInformationT struct {
 	Name     UnicodeString
 	TypeName UnicodeString
 }

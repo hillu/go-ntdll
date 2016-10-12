@@ -70,6 +70,8 @@ var translation = map[string]string{
 	"NTSTATUS":       "NtStatus",
 	"HANDLE":         "Handle",
 	"VOID":           "byte",
+	"LONGLONG":       "int64",
+	"ULONGLONG":      "uint64",
 	"ULONG":          "uint32",
 	"LONG":           "int32",
 	"USHORT":         "uint16",
@@ -77,6 +79,7 @@ var translation = map[string]string{
 	"WSTR":           "uint16",
 	"WCHAR":          "uint16",
 	"UCHAR":          "byte",
+	"CCHAR":          "byte",
 	"CHAR":           "byte",
 	"BOOLEAN":        "bool",
 	"LARGE_INTEGER":  "int64",
@@ -92,25 +95,14 @@ func translate(from string) (to string) {
 	if !strings.HasPrefix(from, "PUBLIC_") && from[0] == 'P' {
 		return "*" + translate(from[1:])
 	}
-	if strings.Contains(from, "_") {
+	if strings.Contains(from, "_") || strings.HasSuffix(from, "ID") {
 		words := strings.Split(from, "_")
 		for _, w := range words {
 			to = to + strings.Title(strings.ToLower(w))
 		}
 		// This avoids collisions between constants and type definitions, e.g.
 		// KeyBasicInformation (constant) vs. KEY_BASIC_INFORMATION (struct)
-		collisions := map[string]struct{}{
-			"KEY_BASIC_INFORMATION":          {},
-			"KEY_NODE_INFORMATION":           {},
-			"KEY_FULL_INFORMATION":           {},
-			"KEY_NAME_INFORMATION":           {},
-			"KEY_CACHED_INFORMATION":         {},
-			"KEY_VIRTUALIZATION_INFORMATION": {},
-			"KEY_VALUE_BASIC_INFORMATION":    {},
-			"KEY_VALUE_FULL_INFORMATION":     {},
-			"KEY_VALUE_PARTIAL_INFORMATION":  {},
-		}
-		if _, ok := collisions[from]; ok {
+		if strings.HasSuffix(from, "_INFORMATION") {
 			to += "T"
 		}
 	}
@@ -279,13 +271,16 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			}
 			m.Name = s.TokenText()
 			if r = s.Scan(); r == '[' {
-				if r = s.Scan(); r != scanner.Int {
+				if r = s.Scan(); r == scanner.Int {
+					if _, err := strconv.Atoi(s.TokenText()); err != nil {
+						return nil, err
+					}
+					m.Type = "[" + s.TokenText() + "]" + m.Type
+				} else if r == scanner.Ident && s.TokenText() == "ANYSIZE_ARRAY" {
+					m.Type = "[1]" + m.Type
+				} else {
 					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", name, s.TokenText())
 				}
-				if _, err := strconv.Atoi(s.TokenText()); err != nil {
-					return nil, err
-				}
-				m.Type = "[" + s.TokenText() + "]" + m.Type
 				if r = s.Scan(); r != ']' {
 					return nil, fmt.Errorf("%s: expecting ']', got '%s'", name, s.TokenText())
 				}
@@ -520,12 +515,14 @@ funcs:
 		fmt.Fprint(buf, ")\n")
 	}
 
-	fmt.Fprintln(buf, "var (")
-	for _, function := range functions {
-		fmt.Fprintf(buf, `proc%[1]s = modntdll.NewProc("%[1]s")
+	if len(functions) != 0 {
+		fmt.Fprintln(buf, "var (")
+		for _, function := range functions {
+			fmt.Fprintf(buf, `proc%[1]s = modntdll.NewProc("%[1]s")
 `, function.Name)
+		}
+		fmt.Fprintln(buf, ")")
 	}
-	fmt.Fprintln(buf, ")")
 
 	for _, st := range structs {
 		fmt.Fprintf(buf, "type %s struct {\n", st.Name)

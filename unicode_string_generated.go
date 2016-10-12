@@ -3,8 +3,6 @@
 
 package ntdll
 
-var ()
-
 type UnicodeString struct {
 	Length        uint16
 	MaximumLength uint16
