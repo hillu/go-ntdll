@@ -75,6 +75,7 @@ var translation = map[string]string{
 	"USHORT":         "uint16",
 	"SHORT":          "int16",
 	"WSTR":           "uint16",
+	"WCHAR":          "uint16",
 	"BOOLEAN":        "bool",
 	"LARGE_INTEGER":  "int64",
 	"ULARGE_INTEGER": "uint64",
@@ -85,13 +86,27 @@ func translate(from string) (to string) {
 	if to, ok = translation[from]; ok {
 		return
 	}
-	if from[0] == 'P' {
+	// ugly workaround
+	if !strings.HasPrefix(from, "PUBLIC_") && from[0] == 'P' {
 		return "*" + translate(from[1:])
 	}
 	if strings.Contains(from, "_") {
 		words := strings.Split(from, "_")
 		for _, w := range words {
 			to = to + strings.Title(strings.ToLower(w))
+		}
+		// This avoids collisions between constants and type definitions, e.g.
+		// KeyBasicInformation (constant) vs. KEY_BASIC_INFORMATION (struct)
+		collisions := map[string]struct{}{
+			"KEY_BASIC_INFORMATION":          {},
+			"KEY_MODE_INFORMATION":           {},
+			"KEY_FULL_INFORMATION":           {},
+			"KEY_NAME_INFORMATION":           {},
+			"KEY_CACHED_INFORMATION":         {},
+			"KEY_VIRTUALIZATION_INFORMATION": {},
+		}
+		if _, ok := collisions[from]; ok {
+			to += "T"
 		}
 	}
 	return
@@ -243,7 +258,19 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 				return nil, fmt.Errorf("%s: expecting type / name pair, got '%s'", name, s.TokenText())
 			}
 			m.Name = s.TokenText()
-			if r = s.Scan(); r != ';' {
+			if r = s.Scan(); r == '[' {
+				if r = s.Scan(); r != scanner.Int {
+					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", name, s.TokenText())
+				}
+				if _, err := strconv.Atoi(s.TokenText()); err != nil {
+					return nil, err
+				}
+				m.Type = "[" + s.TokenText() + "]" + m.Type
+				if r = s.Scan(); r != ']' {
+					return nil, fmt.Errorf("%s: expecting ']', got '%s'", name, s.TokenText())
+				}
+				r = s.Scan()
+			} else if r != ';' {
 				return nil, fmt.Errorf("%s: expecting semicolon after type / name pair, got '%s'", name, s.TokenText())
 			}
 			sd.Members = append(sd.Members, m)
