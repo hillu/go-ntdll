@@ -76,6 +76,8 @@ var translation = map[string]string{
 	"SHORT":          "int16",
 	"WSTR":           "uint16",
 	"WCHAR":          "uint16",
+	"UCHAR":          "byte",
+	"CHAR":           "byte",
 	"BOOLEAN":        "bool",
 	"LARGE_INTEGER":  "int64",
 	"ULARGE_INTEGER": "uint64",
@@ -99,11 +101,14 @@ func translate(from string) (to string) {
 		// KeyBasicInformation (constant) vs. KEY_BASIC_INFORMATION (struct)
 		collisions := map[string]struct{}{
 			"KEY_BASIC_INFORMATION":          {},
-			"KEY_MODE_INFORMATION":           {},
+			"KEY_NODE_INFORMATION":           {},
 			"KEY_FULL_INFORMATION":           {},
 			"KEY_NAME_INFORMATION":           {},
 			"KEY_CACHED_INFORMATION":         {},
 			"KEY_VIRTUALIZATION_INFORMATION": {},
+			"KEY_VALUE_BASIC_INFORMATION":    {},
+			"KEY_VALUE_FULL_INFORMATION":     {},
+			"KEY_VALUE_PARTIAL_INFORMATION":  {},
 		}
 		if _, ok := collisions[from]; ok {
 			to += "T"
@@ -143,15 +148,19 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 					return nil, fmt.Errorf("function definition needs at least a name and a type")
 				}
 				f.Name = tokens[0]
+				var typ string
 				for _, t := range tokens[1:] {
 					switch t {
 					// ignore WINAPI calling convention
 					case "WINAPI":
 					default:
-						f.Type = t
+						typ = t
 					}
 				}
-				f.Type = translate(f.Type)
+				f.Type = translate(typ)
+				if f.Type == "" {
+					return nil, fmt.Errorf("did not find translation type for %s", typ)
+				}
 				tokens = tokens[0:0]
 				state = StateParam
 			case scanner.Ident:
@@ -168,6 +177,7 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 					return nil, fmt.Errorf("function parameter needs at least a name and a type")
 				}
 				p := FunctionParameterDefinition{Name: tokens[0]}
+				var typ string
 				for _, t := range tokens[1:] {
 					switch t {
 					case "_In_", "_In_opt_":
@@ -178,10 +188,13 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 						p.Direction = DirectionInOut
 					case "_Reserved_":
 					default:
-						p.Type = t
+						typ = t
 					}
 				}
-				p.Type = translate(p.Type)
+				p.Type = translate(typ)
+				if p.Type == "" {
+					return nil, fmt.Errorf("did not find translation type for %s", typ)
+				}
 				f.Params = append(f.Params, p)
 				tokens = tokens[0:0]
 				if r == ')' {
@@ -241,6 +254,9 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			}
 			name = s.TokenText()[1:]
 			sd.Name = translate(name)
+			if sd.Name == "" {
+				return nil, fmt.Errorf("did not find translation type for %s", name)
+			}
 			if r = s.Scan(); r != '{' {
 				return nil, e
 			}
@@ -253,7 +269,11 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			if r != scanner.Ident {
 				return nil, fmt.Errorf("%s: expecting type, got '%s'", name, s.TokenText())
 			}
-			m := StructMemberDefinition{Type: translate(s.TokenText())}
+			typ := translate(s.TokenText())
+			if typ == "" {
+				return nil, fmt.Errorf("did not find translation type for %s", s.TokenText())
+			}
+			m := StructMemberDefinition{Type: typ}
 			if r = s.Scan(); r != scanner.Ident {
 				return nil, fmt.Errorf("%s: expecting type / name pair, got '%s'", name, s.TokenText())
 			}
