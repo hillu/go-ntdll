@@ -10,6 +10,9 @@ import (
 // indicates a too small buffer, the buffer is expanded and the call
 // retried, until it succeeds (or fails for another reason).
 //
+// If the API call succeeds, the buffer size is adjusted according to
+// resultLength.
+//
 // Example:
 /*
 buf := make([]byte, 128)
@@ -35,6 +38,9 @@ func CallWithExpandingBuffer(fn func() NtStatus, buf *[]byte, resultLength *uint
 			}
 			continue
 		} else {
+			if !st.IsError() {
+				*buf = (*buf)[:int(*resultLength)]
+			}
 			return st
 		}
 	}
