@@ -33,13 +33,13 @@ const (
 type KeySetInformationClass uint32
 
 const (
-	KeyWriteTimeInformation         KeySetInformationClass = 1
-	KeyWow64FlagsInformation                               = 2
-	KeyControlFlagsInformation                             = 3
-	KeySetVirtualizationInformation                        = 4
-	KeySetDebugInformation                                 = 5
-	KeySetHandleTagsInformation                            = 6
-	MaxKeySetInfoClass                                     = 7
+	KeyWriteTimeInformation         KeySetInformationClass = 0
+	KeyWow64FlagsInformation                               = 1
+	KeyControlFlagsInformation                             = 2
+	KeySetVirtualizationInformation                        = 3
+	KeySetDebugInformation                                 = 4
+	KeySetHandleTagsInformation                            = 5
+	MaxKeySetInfoClass                                     = 6
 )
 
 var (

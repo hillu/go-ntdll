@@ -322,7 +322,7 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 
 type EnumMemberDefinition struct {
 	Name  string
-	Value uint32
+	Value int
 }
 
 type EnumDefinition struct {
@@ -349,7 +349,7 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 	state := StateInit
 	var ed EnumDefinition
 	var name string
-	var lastval uint32
+	lastval := -1
 	for {
 		r := s.Scan()
 		if r == scanner.EOF {
@@ -390,8 +390,8 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 				if err != nil {
 					return nil, err
 				}
-				lastval = uint32(v)
-				m.Value = uint32(v)
+				lastval = v
+				m.Value = v
 				r = s.Scan()
 			} else if r == ',' || r == '}' {
 				lastval++
