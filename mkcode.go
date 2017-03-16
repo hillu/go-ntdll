@@ -309,6 +309,9 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			if strings.HasPrefix(typ, "*P") {
 				typ = typ[2:]
 			}
+			if typ != name && typ[0] == 'I' {
+				typ = typ[1:]
+			}
 			if typ != name {
 				return nil, fmt.Errorf("expecting type %s, got %s", name, typ)
 			}
@@ -426,6 +429,9 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 			typ += s.TokenText()
 			if strings.HasPrefix(typ, "*P") {
 				typ = typ[2:]
+			}
+			if typ != name && typ[1:] == name {
+				typ = typ[1:]
 			}
 			if typ != name {
 				return nil, fmt.Errorf("expecting type %s, got %s", name, typ)
