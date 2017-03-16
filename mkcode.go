@@ -94,9 +94,11 @@ func translate(from string) (to string) {
 	if to, ok = translation[from]; ok {
 		return
 	}
-	// ugly workaround
+	// recognize pointer types
 	if !strings.HasPrefix(from, "PUBLIC_") && from[0] == 'P' {
-		return "*" + translate(from[1:])
+		if rest := translate(from[1:]); rest != "" {
+			return "*" + rest
+		}
 	}
 	if strings.Contains(from, "_") || strings.HasSuffix(from, "ID") {
 		words := strings.Split(from, "_")
@@ -108,6 +110,8 @@ func translate(from string) (to string) {
 		if strings.HasSuffix(from, "_INFORMATION") {
 			to += "T"
 		}
+	} else {
+		return strings.Title(strings.ToLower(from))
 	}
 	return
 }
