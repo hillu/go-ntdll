@@ -70,10 +70,12 @@ var translation = map[string]string{
 	"NTSTATUS":       "NtStatus",
 	"HANDLE":         "Handle",
 	"VOID":           "byte",
+	"SIZE_T":         "uintptr",
 	"LONGLONG":       "int64",
 	"ULONGLONG":      "uint64",
 	"ULONG":          "uint32",
 	"LONG":           "int32",
+	"DWORD":          "uint32",
 	"USHORT":         "uint16",
 	"SHORT":          "int16",
 	"WSTR":           "uint16",
@@ -97,6 +99,11 @@ func translate(from string) (to string) {
 	// recognize pointer types
 	if !strings.HasPrefix(from, "PUBLIC_") && from[0] == 'P' {
 		if rest := translate(from[1:]); rest != "" {
+			return "*" + rest
+		}
+	}
+	if strings.HasSuffix(from, "_PTR") {
+		if rest := translate(from[:len(from)-4]); rest != "" {
 			return "*" + rest
 		}
 	}
@@ -183,7 +190,7 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 						p.Direction = DirectionIn
 					case "_Out_", "_Out_opt_":
 						p.Direction = DirectionOut
-					case "_Inout_":
+					case "_Inout_", "_Inout_opt_":
 						p.Direction = DirectionInOut
 					case "_Reserved_":
 					default:
