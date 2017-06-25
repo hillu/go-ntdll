@@ -5,6 +5,7 @@ package main
 import (
 	"errors"
 	"fmt"
+  "os"
 	"unsafe"
 
 	"github.com/hillu/go-ntdll"
@@ -33,7 +34,7 @@ func Walk(entry string, fn WalkFunc) error {
 		default:
 			return st.Error()
 		}
-		odi := (*ntdll.ObjectDirectoryInformation)(unsafe.Pointer(&buf[0]))
+		odi := (*ntdll.ObjectDirectoryInformationT)(unsafe.Pointer(&buf[0]))
 		var path string
 		if entry == `\` {
 			path = `\` + odi.Name.String()
@@ -60,7 +61,13 @@ func Walk(entry string, fn WalkFunc) error {
 }
 
 func main() {
-	Walk("\\", func(path, typ string) error {
+	var path string
+	if len(os.Args) > 1 {
+		path = os.Args[1]
+	} else {
+		path = "\\"
+	}
+	Walk(path, func(path, typ string) error {
 		switch typ {
 		case "SymbolicLink":
 			var h ntdll.Handle
