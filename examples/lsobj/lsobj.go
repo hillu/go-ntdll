@@ -33,7 +33,7 @@ func Walk(entry string, fn WalkFunc) error {
 		default:
 			return st.Error()
 		}
-		odi := (*ntdll.ObjectDirectoryInformation)(unsafe.Pointer(&buf[0]))
+		odi := (*ntdll.ObjectDirectoryInformationT)(unsafe.Pointer(&buf[0]))
 		var path string
 		if entry == `\` {
 			path = `\` + odi.Name.String()
