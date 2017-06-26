@@ -61,13 +61,13 @@ func Walk(entry string, fn WalkFunc) error {
 }
 
 func main() {
-	var path string
+	var arg string
 	if len(os.Args) > 1 {
-		path = os.Args[1]
+		arg = os.Args[1]
 	} else {
-		path = "\\"
+		arg = "\\"
 	}
-	Walk(path, func(path, typ string) error {
+	Walk(arg, func(path, typ string) error {
 		switch typ {
 		case "SymbolicLink":
 			var h ntdll.Handle
