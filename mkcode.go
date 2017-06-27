@@ -566,12 +566,16 @@ funcs:
 			// alist = append(alist, fmt.Sprintf("p%d %s", n, param.Type))
 			// plist = append(plist, "p"+strconv.Itoa(n))
 		}
+		returnExpression := function.Type + "(r0)"
+		if function.Type == "bool" {
+			returnExpression = "r0 != 0"
+		}
 		fmt.Fprintf(buf, `func %[1]s(%[2]s) %[3]s {
 	r0, _, _ := proc%[1]s.Call(%[4]s)
-	return %[3]s(r0)
+	return %[5]s
 }
 
-`, function.Name, strings.Join(alist, ", "), function.Type, strings.Join(plist, ", "))
+`, function.Name, strings.Join(alist, ", "), function.Type, strings.Join(plist, ", "), returnExpression)
 	}
 
 	f, err = os.Create(outfile)
