@@ -386,26 +386,3 @@ typedef enum _KEY_SET_INFORMATION_CLASS {
   MaxKeySetInfoClass
 } KEY_SET_INFORMATION_CLASS;
 */
-
-/* ------------------------------------------------------------ */
-
-/*
-typedef struct _IO_STATUS_BLOCK {
-  union {
-    NTSTATUS Status;
-    PVOID    Pointer;
-  };
-  ULONG_PTR Information;
-} IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
-*/
-
-type IoStatusBlock struct {
-	StatusPointer uintptr
-	Information   uintptr
-}
-
-/*
-typedef VOID (NTAPI *PIO_APC_ROUTINE)(PVOID ApcContext,PIO_STATUS_BLOCK IoStatusBlock,ULONG Reserved);
-*/
-
-type IoApcRoutine uintptr
