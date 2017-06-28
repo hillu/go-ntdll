@@ -62,8 +62,8 @@ type StructMemberDefinition struct {
 }
 
 type StructDefinition struct {
-	Name    string
-	Members []StructMemberDefinition
+	Name, OriginalName string
+	Members            []StructMemberDefinition
 }
 
 var translation = map[string]string{
@@ -240,7 +240,6 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 	s.Init(rd)
 	state := StateInit
 	var sd StructDefinition
-	var name string
 	for {
 		r := s.Scan()
 		if r == scanner.EOF {
@@ -258,10 +257,10 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			if r = s.Scan(); r != scanner.Ident || !strings.HasPrefix(s.TokenText(), "_") {
 				return nil, e
 			}
-			name = s.TokenText()[1:]
-			sd.Name = translate(name)
+			sd.OriginalName = s.TokenText()[1:]
+			sd.Name = translate(sd.OriginalName)
 			if sd.Name == "" {
-				return nil, fmt.Errorf("did not find translation type for %s", name)
+				return nil, fmt.Errorf("did not find translation type for %s", sd.OriginalName)
 			}
 			if r = s.Scan(); r != '{' {
 				return nil, e
@@ -273,7 +272,7 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 				continue
 			}
 			if r != scanner.Ident {
-				return nil, fmt.Errorf("%s: expecting type, got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: expecting type, got '%s'", sd.OriginalName, s.TokenText())
 			}
 			typ := translate(s.TokenText())
 			if typ == "" {
@@ -281,7 +280,7 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			}
 			m := StructMemberDefinition{Type: typ}
 			if r = s.Scan(); r != scanner.Ident {
-				return nil, fmt.Errorf("%s: expecting type / name pair, got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: expecting type / name pair, got '%s'", sd.OriginalName, s.TokenText())
 			}
 			m.Name = s.TokenText()
 			if r = s.Scan(); r == '[' {
@@ -293,14 +292,14 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 				} else if r == scanner.Ident && s.TokenText() == "ANYSIZE_ARRAY" {
 					m.Type = "[1]" + m.Type
 				} else {
-					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", name, s.TokenText())
+					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", sd.OriginalName, s.TokenText())
 				}
 				if r = s.Scan(); r != ']' {
-					return nil, fmt.Errorf("%s: expecting ']', got '%s'", name, s.TokenText())
+					return nil, fmt.Errorf("%s: expecting ']', got '%s'", sd.OriginalName, s.TokenText())
 				}
 				r = s.Scan()
 			} else if r != ';' {
-				return nil, fmt.Errorf("%s: expecting semicolon after type / name pair, got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: expecting semicolon after type / name pair, got '%s'", sd.OriginalName, s.TokenText())
 			}
 			sd.Members = append(sd.Members, m)
 		case StateExit:
@@ -320,11 +319,11 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			if strings.HasPrefix(typ, "*P") {
 				typ = typ[2:]
 			}
-			if typ != name && typ[0] == 'I' {
+			if typ != sd.OriginalName && typ[0] == 'I' {
 				typ = typ[1:]
 			}
-			if typ != name {
-				return nil, fmt.Errorf("expecting type %s, got %s", name, typ)
+			if typ != sd.OriginalName {
+				return nil, fmt.Errorf("expecting type %s, got %s", sd.OriginalName, typ)
 			}
 			if s.Peek() == ',' {
 				s.Scan()
@@ -343,8 +342,8 @@ type EnumMemberDefinition struct {
 }
 
 type EnumDefinition struct {
-	Name    string
-	Members []EnumMemberDefinition
+	Name, OriginalName string
+	Members            []EnumMemberDefinition
 }
 
 // ParseEnumDefinition is a half-arsed parser for C enum definitions
@@ -365,7 +364,6 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 	s.Init(rd)
 	state := StateInit
 	var ed EnumDefinition
-	var name string
 	lastval := -1
 	for {
 		r := s.Scan()
@@ -384,8 +382,8 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 			if r = s.Scan(); r != scanner.Ident || !strings.HasPrefix(s.TokenText(), "_") {
 				return nil, e
 			}
-			name = s.TokenText()[1:]
-			ed.Name = translate(name)
+			ed.OriginalName = s.TokenText()[1:]
+			ed.Name = translate(ed.OriginalName)
 			if r = s.Scan(); r != '{' {
 				return nil, e
 			}
@@ -396,12 +394,12 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 				continue
 			}
 			if r != scanner.Ident {
-				return nil, fmt.Errorf("%s: expecting name, got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: expecting name, got '%s'", ed.OriginalName, s.TokenText())
 			}
 			m := EnumMemberDefinition{Name: s.TokenText()}
 			if r = s.Scan(); r == '=' {
 				if r = s.Scan(); r != scanner.Int {
-					return nil, fmt.Errorf("%s: expecting int, got '%s'", name, s.TokenText())
+					return nil, fmt.Errorf("%s: expecting int, got '%s'", ed.OriginalName, s.TokenText())
 				}
 				v, err := strconv.Atoi(s.TokenText())
 				if err != nil {
@@ -414,12 +412,12 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 				lastval++
 				m.Value = lastval
 			} else {
-				return nil, fmt.Errorf("%s: expecting enum value or ellipsis, got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: expecting enum value or ellipsis, got '%s'", ed.OriginalName, s.TokenText())
 			}
 			if r == ',' || r == '}' {
 				ed.Members = append(ed.Members, m)
 			} else {
-				return nil, fmt.Errorf("%s: Expecting ',' or '}', got '%s'", name, s.TokenText())
+				return nil, fmt.Errorf("%s: Expecting ',' or '}', got '%s'", ed.OriginalName, s.TokenText())
 			}
 			if r == '}' {
 				state = StateExit
@@ -441,11 +439,11 @@ func ParseEnumDefinition(rd io.Reader) (*EnumDefinition, error) {
 			if strings.HasPrefix(typ, "*P") {
 				typ = typ[2:]
 			}
-			if typ != name && typ[1:] == name {
+			if typ != ed.OriginalName && typ[1:] == ed.OriginalName {
 				typ = typ[1:]
 			}
-			if typ != name {
-				return nil, fmt.Errorf("expecting type %s, got %s", name, typ)
+			if typ != ed.OriginalName {
+				return nil, fmt.Errorf("expecting type %s, got %s", ed.OriginalName, typ)
 			}
 			if s.Peek() == ',' {
 				s.Scan()
@@ -524,7 +522,10 @@ funcs:
 	}
 
 	for _, enum := range enums {
-		fmt.Fprintf(buf, "type %s uint32; const (\n", enum.Name)
+		fmt.Fprintf(buf, `// The %[1]s constants have been derived from the %[2]s enum definition.
+type %[1]s uint32; const (
+`,
+			enum.Name, enum.OriginalName)
 		for i, member := range enum.Members {
 			if i == 0 {
 				fmt.Fprintf(buf, "%s %s = %d\n", member.Name, enum.Name, member.Value)
@@ -545,7 +546,10 @@ funcs:
 	}
 
 	for _, st := range structs {
-		fmt.Fprintf(buf, "type %s struct {\n", st.Name)
+		fmt.Fprintf(buf, `// %[1]s has been derived from the %[2]s struct definition.
+type %[1]s struct {
+`,
+			st.Name, st.OriginalName)
 		for _, m := range st.Members {
 			fmt.Fprintf(buf, "%s %s\n", m.Name, m.Type)
 		}

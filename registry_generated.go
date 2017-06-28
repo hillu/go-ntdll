@@ -5,6 +5,7 @@ package ntdll
 
 import "unsafe"
 
+// The KeyInformationClass constants have been derived from the KEY_INFORMATION_CLASS enum definition.
 type KeyInformationClass uint32
 
 const (
@@ -19,6 +20,7 @@ const (
 	MaxKeyInfoClass                                  = 8
 )
 
+// The KeyValueInformationClass constants have been derived from the KEY_VALUE_INFORMATION_CLASS enum definition.
 type KeyValueInformationClass uint32
 
 const (
@@ -30,6 +32,7 @@ const (
 	MaxKeyValueInfoClass                                       = 5
 )
 
+// The KeySetInformationClass constants have been derived from the KEY_SET_INFORMATION_CLASS enum definition.
 type KeySetInformationClass uint32
 
 const (
@@ -63,6 +66,7 @@ var (
 	procNtSetValueKey              = modntdll.NewProc("NtSetValueKey")
 )
 
+// KeyValueEntry has been derived from the KEY_VALUE_ENTRY struct definition.
 type KeyValueEntry struct {
 	ValueName  *UnicodeString
 	DataLength uint32
@@ -70,6 +74,7 @@ type KeyValueEntry struct {
 	Type       uint32
 }
 
+// KeyBasicInformationT has been derived from the KEY_BASIC_INFORMATION struct definition.
 type KeyBasicInformationT struct {
 	LastWriteTime int64
 	TitleIndex    uint32
@@ -77,6 +82,7 @@ type KeyBasicInformationT struct {
 	Name          [1]uint16
 }
 
+// KeyNodeInformationT has been derived from the KEY_NODE_INFORMATION struct definition.
 type KeyNodeInformationT struct {
 	LastWriteTime int64
 	TitleIndex    uint32
@@ -86,6 +92,7 @@ type KeyNodeInformationT struct {
 	Name          [1]uint16
 }
 
+// KeyFullInformationT has been derived from the KEY_FULL_INFORMATION struct definition.
 type KeyFullInformationT struct {
 	LastWriteTime   int64
 	TitleIndex      uint32
@@ -100,11 +107,13 @@ type KeyFullInformationT struct {
 	Class           [1]uint16
 }
 
+// KeyNameInformationT has been derived from the KEY_NAME_INFORMATION struct definition.
 type KeyNameInformationT struct {
 	NameLength uint32
 	Name       [1]uint16
 }
 
+// KeyCachedInformationT has been derived from the KEY_CACHED_INFORMATION struct definition.
 type KeyCachedInformationT struct {
 	LastWriteTime   int64
 	TitleIndex      uint32
@@ -116,6 +125,7 @@ type KeyCachedInformationT struct {
 	NameLength      uint32
 }
 
+// KeyValueBasicInformationT has been derived from the KEY_VALUE_BASIC_INFORMATION struct definition.
 type KeyValueBasicInformationT struct {
 	TitleIndex uint32
 	Type       uint32
@@ -123,6 +133,7 @@ type KeyValueBasicInformationT struct {
 	Name       [1]uint16
 }
 
+// KeyValueFullInformationT has been derived from the KEY_VALUE_FULL_INFORMATION struct definition.
 type KeyValueFullInformationT struct {
 	TitleIndex uint32
 	Type       uint32
@@ -132,6 +143,7 @@ type KeyValueFullInformationT struct {
 	Name       [1]uint16
 }
 
+// KeyValuePartialInformationT has been derived from the KEY_VALUE_PARTIAL_INFORMATION struct definition.
 type KeyValuePartialInformationT struct {
 	TitleIndex uint32
 	Type       uint32

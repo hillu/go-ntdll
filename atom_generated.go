@@ -5,6 +5,7 @@ package ntdll
 
 import "unsafe"
 
+// The AtomInformationClass constants have been derived from the ATOM_INFORMATION_CLASS enum definition.
 type AtomInformationClass uint32
 
 const (
@@ -19,6 +20,7 @@ var (
 	procNtQueryInformationAtom = modntdll.NewProc("NtQueryInformationAtom")
 )
 
+// AtomBasicInformationT has been derived from the ATOM_BASIC_INFORMATION struct definition.
 type AtomBasicInformationT struct {
 	UsageCount uint16
 	Flags      uint16
@@ -26,6 +28,7 @@ type AtomBasicInformationT struct {
 	Name       [1]uint16
 }
 
+// AtomTableInformationT has been derived from the ATOM_TABLE_INFORMATION struct definition.
 type AtomTableInformationT struct {
 	NumberOfAtoms uint32
 	Atoms         [1]RtlAtom

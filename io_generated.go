@@ -3,6 +3,7 @@
 
 package ntdll
 
+// The IoPriorityHint constants have been derived from the IO_PRIORITY_HINT enum definition.
 type IoPriorityHint uint32
 
 const (

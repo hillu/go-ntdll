@@ -9,12 +9,14 @@ var (
 	procRtlDosPathNameToNtPathName_U = modntdll.NewProc("RtlDosPathNameToNtPathName_U")
 )
 
+// RtlRelativeNameU has been derived from the RTL_RELATIVE_NAME_U struct definition.
 type RtlRelativeNameU struct {
 	RelativeName        UnicodeString
 	ContainingDirectory Handle
 	CurDirRef           *RtlpCurdirRef
 }
 
+// RtlpCurdirRef has been derived from the RTLP_CURDIR_REF struct definition.
 type RtlpCurdirRef struct {
 	RefCount int32
 	Handle   Handle

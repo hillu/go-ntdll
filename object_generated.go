@@ -14,6 +14,7 @@ var (
 	procNtCreateDirectoryObject    = modntdll.NewProc("NtCreateDirectoryObject")
 )
 
+// ObjectAttributes has been derived from the OBJECT_ATTRIBUTES struct definition.
 type ObjectAttributes struct {
 	Length                   uint32
 	RootDirectory            Handle
@@ -23,6 +24,7 @@ type ObjectAttributes struct {
 	SecurityQualityOfService *byte
 }
 
+// ObjectDirectoryInformationT has been derived from the OBJECT_DIRECTORY_INFORMATION struct definition.
 type ObjectDirectoryInformationT struct {
 	Name     UnicodeString
 	TypeName UnicodeString

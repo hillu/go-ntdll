@@ -3,6 +3,7 @@
 
 package ntdll
 
+// Guid has been derived from the GUID struct definition.
 type Guid struct {
 	Data1 uint32
 	Data2 uint16

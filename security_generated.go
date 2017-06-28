@@ -3,6 +3,7 @@
 
 package ntdll
 
+// Acl has been derived from the ACL struct definition.
 type Acl struct {
 	AclRevision byte
 	Sbz1        byte
@@ -11,6 +12,7 @@ type Acl struct {
 	Sbz2        uint16
 }
 
+// Sid has been derived from the SID struct definition.
 type Sid struct {
 	Revision            byte
 	SubAuthorityCount   byte
@@ -18,10 +20,12 @@ type Sid struct {
 	SubAuthority        [1]uint32
 }
 
+// SidIdentifierAuthority has been derived from the SID_IDENTIFIER_AUTHORITY struct definition.
 type SidIdentifierAuthority struct {
 	Value [6]byte
 }
 
+// SecurityDescriptor has been derived from the SECURITY_DESCRIPTOR struct definition.
 type SecurityDescriptor struct {
 	Revision byte
 	Sbz1     byte

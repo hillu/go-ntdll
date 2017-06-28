@@ -3,6 +3,7 @@
 
 package ntdll
 
+// UnicodeString has been derived from the UNICODE_STRING struct definition.
 type UnicodeString struct {
 	Length        uint16
 	MaximumLength uint16
