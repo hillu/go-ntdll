@@ -30,11 +30,12 @@ header file snippets as found in the MSDN. The transformation code can
 be found in `mkcode.go`, it probably has bugs and does not cover all
 cases.
 
-To add more structures or function stubs, just find the appropriate
-definition on MSDN and copy them into block comments, prefixed by
-`type:` or `func:`, respectively. `go generate` can then be used to
-regenerate the `*_generated.go` files containing structure definitions
-and the glue code around `golang.org/x/sys/windows`.
+To add more structures or function stubs or enumeration types, just
+find the appropriate definition on MSDN and copy them into block
+comments, prefixed by `type:`, `func:`, or `enum:`, respectively. `go
+generate` can then be used to regenerate the `*_generated.go` files
+containing structure definitions and the glue code around
+`golang.org/x/sys/windows`.
 
 License
 -------
