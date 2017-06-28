@@ -8,6 +8,9 @@
 //
 // Comments in Go files that begin with "type:" are parsed as a C
 // type definitions.
+//
+// Comments in Go files that begin with "enum:" are parsed as a C
+// enum definitions.
 package main
 
 import (
