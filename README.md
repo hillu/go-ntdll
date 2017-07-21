@@ -6,7 +6,7 @@ Go interface to NTDLL functions
 This package makes selected `NTDLL` funcions directly available in Go
 programs. At the moment, types and functions for accessing kernel
 objects and the Registry are included. The goal is to, eventually,
-cover all available functinos.
+cover all available functions.
 
 Note
 ----
