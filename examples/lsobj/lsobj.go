@@ -5,11 +5,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"unsafe"
 
-	"github.com/oec/go-ntdll"
+	"github.com/hillu/go-ntdll"
 )
 
 var SkipDir = errors.New("skip this directory")
@@ -29,8 +28,8 @@ func Walk(entry string, fn WalkFunc) error {
 		var buf [32768]byte
 		var length uint32
 		switch st := ntdll.NtQueryDirectoryObject(h, &buf[0], uint32(len(buf)), true, context == 0, &context, &length); st {
-		case ntdll.STATUS_SUCCESS:
-		case ntdll.STATUS_NO_MORE_ENTRIES:
+		case 0:
+		case 0x8000001a: // STATUS_NO_MORE_ENTRIES
 			return nil
 		default:
 			return st.Error()

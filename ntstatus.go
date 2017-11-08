@@ -13,7 +13,7 @@ func (s NtStatus) Error() error {
 	if s == 0 {
 		return nil
 	}
-	return fmt.Errorf("NtStatus 0x%08x (%s)", uint32(s), s)
+	return fmt.Errorf("NtStatus %08x", s)
 }
 
 func (s NtStatus) IsSuccess() bool {
