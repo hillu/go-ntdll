@@ -54,7 +54,6 @@ func main() {
 		  </td></tr>
 	*/
 
-	var maxlen = 0
 	var n2s = map[uint64]string{}
 	doc.Find("table tr").Each(func(i int, s *goquery.Selection) {
 		if i == 0 {
@@ -63,7 +62,6 @@ func main() {
 		st := status{}
 
 		td1 := s.Find("td")
-
 		if td1 == nil {
 			log.Println("entry ", i, "empty td")
 			return
@@ -71,17 +69,13 @@ func main() {
 
 		p := td1.Find("p").First()
 		v := strings.TrimSpace(p.Text())
-		// fmt.Println("v:", v, p)
 		if _, err = fmt.Sscanf(v, "0x%X", &st.val); err != nil {
 			log.Println("entry ", i, err)
 			return
 		}
 		st.name = p.Next().Text()
-		n2s[st.val] = st.name // duplicate gets overwritten!
-		st.desc = strings.Replace(td1.Next().Find("p").Text(), "\n", "", -1)
-		if len(st.name) > maxlen {
-			maxlen = len(st.name)
-		}
+		n2s[st.val] = st.name // Any duplicate gets overwritten!
+		st.desc = strings.Replace(td1.Next().Find("p").Text(), "\n", " ", -1)
 		list = append(list, st)
 	})
 
@@ -103,7 +97,7 @@ func main() {
 	code.WriteString(")\n\n")
 
 	// Write the reverse-lookup-table.
-	// Duplicates in the original list from MSDN have ben reduced to the
+	// Duplicates in the original list from MSDN have been reduced to the
 	// latest value.
 	code.WriteString("var ntStatus2str = map[NtStatus]string{\n")
 	for n, s := range n2s {
