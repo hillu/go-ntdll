@@ -9,6 +9,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -62,6 +63,7 @@ func main() {
 	*/
 
 	var n2s = map[uint64]string{}
+	var spaces = regexp.MustCompile("  *")
 	doc.Find("table tr").Each(func(i int, s *goquery.Selection) {
 		if i == 0 {
 			return // skip header
@@ -82,7 +84,8 @@ func main() {
 		}
 		st.name = p.Next().Text()
 		n2s[st.val] = st.name // Any duplicate gets overwritten!
-		st.desc = strings.Replace(td1.Next().Find("p").Text(), "\n", " ", -1)
+		desc := strings.Replace(td1.Next().Find("p").Text(), "\n", "", -1)
+		st.desc = spaces.ReplaceAllLiteralString(desc, " ")
 		list = append(list, st)
 	})
 
