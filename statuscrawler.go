@@ -115,7 +115,7 @@ func main() {
 	// Duplicates in the original list from MSDN have been reduced to the
 	// latest value.
 	code.WriteString("var ntStatus2str = map[NtStatus]string{\n")
-  for _, k := range keys {
+	for _, k := range keys {
 		fmt.Fprintf(code, "0x%08X : \"%s\",\n", k, n2s[k])
 	}
 	code.WriteString("}\n\n")
