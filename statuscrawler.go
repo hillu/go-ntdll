@@ -24,13 +24,13 @@ type status struct {
 	desc string
 }
 
-var list = []status{}
+type StatusList []status
 
-type Uint64s []uint64
+func (l StatusList) Len() int           { return len(l) }
+func (l StatusList) Swap(i, j int)      { l[i], l[j] = l[j], l[i] }
+func (l StatusList) Less(i, j int) bool { return l[i].val < l[j].val }
 
-func (a Uint64s) Len() int           { return len(a) }
-func (a Uint64s) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a Uint64s) Less(i, j int) bool { return a[i] < a[j] }
+var list StatusList
 
 func main() {
 	doc, err := goquery.NewDocument(URL)
@@ -86,6 +86,9 @@ func main() {
 		list = append(list, st)
 	})
 
+	// Sort the list by status code.
+	sort.Sort(list)
+
 	// Write the header
 	code := &bytes.Buffer{}
 	code.WriteString("package ntdll\n")
@@ -103,20 +106,15 @@ func main() {
 	}
 	code.WriteString(")\n\n")
 
-	var keys Uint64s
-	for k := range n2s {
-		keys = append(keys, k)
-	}
-	sort.Sort(keys)
-
-	n2s[0x00000000] = "STATUS_SUCCESS"
+	n2s[0x00000000] = "STATUS_SUCCESS" // Fix the correspondence
 
 	// Write the reverse-lookup-table.
-	// Duplicates in the original list from MSDN have been reduced to the
-	// latest value.
 	code.WriteString("var ntStatus2str = map[NtStatus]string{\n")
-	for _, k := range keys {
-		fmt.Fprintf(code, "0x%08X : \"%s\",\n", k, n2s[k])
+	for _, status := range list {
+		if short, ok := n2s[status.val]; ok {
+			fmt.Fprintf(code, "0x%08X : \"%s\",\n", status.val, short)
+			delete(n2s, status.val) // Avoid duplicates.
+		}
 	}
 	code.WriteString("}\n\n")
 
