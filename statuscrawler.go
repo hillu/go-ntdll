@@ -9,6 +9,7 @@ import (
 	"go/format"
 	"log"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -24,6 +25,12 @@ type status struct {
 }
 
 var list = []status{}
+
+type Uint64s []uint64
+
+func (a Uint64s) Len() int           { return len(a) }
+func (a Uint64s) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a Uint64s) Less(i, j int) bool { return a[i] < a[j] }
 
 func main() {
 	doc, err := goquery.NewDocument(URL)
@@ -96,12 +103,20 @@ func main() {
 	}
 	code.WriteString(")\n\n")
 
+	var keys Uint64s
+	for k := range n2s {
+		keys = append(keys, k)
+	}
+	sort.Sort(keys)
+
+	n2s[0x00000000] = "STATUS_SUCCESS"
+
 	// Write the reverse-lookup-table.
 	// Duplicates in the original list from MSDN have been reduced to the
 	// latest value.
 	code.WriteString("var ntStatus2str = map[NtStatus]string{\n")
-	for n, s := range n2s {
-		fmt.Fprintf(code, "0x%08X : \"%s\",\n", n, s)
+  for _, k := range keys {
+		fmt.Fprintf(code, "0x%08X : \"%s\",\n", k, n2s[k])
 	}
 	code.WriteString("}\n\n")
 
