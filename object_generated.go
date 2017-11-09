@@ -30,32 +30,76 @@ type ObjectDirectoryInformationT struct {
 	TypeName UnicodeString
 }
 
-func NtOpenDirectoryObject(DirectoryHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes) NtStatus {
-	r0, _, _ := procNtOpenDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)))
+// OUT-parameter: DirectoryHandle.
+func NtOpenDirectoryObject(DirectoryHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes) NtStatus {
+	r0, _, _ := procNtOpenDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)))
 	return NtStatus(r0)
 }
 
-func NtQueryDirectoryObject(DirectoryHandle Handle, Buffer *byte, Length uint32, ReturnSingleEntry bool, RestartScan bool, Context *uint32, ReturnLength *uint32) NtStatus {
-	r0, _, _ := procNtQueryDirectoryObject.Call(uintptr(DirectoryHandle), uintptr(unsafe.Pointer(Buffer)), uintptr(Length), fromBool(ReturnSingleEntry), fromBool(RestartScan), uintptr(unsafe.Pointer(Context)), uintptr(unsafe.Pointer(ReturnLength)))
+// OUT-parameter: Buffer, ReturnLength.
+// INOUT-parameter: Context.
+// *OPT-parameter: Buffer, ReturnLength.
+func NtQueryDirectoryObject(DirectoryHandle Handle,
+	Buffer *byte,
+	Length uint32,
+	ReturnSingleEntry bool,
+	RestartScan bool,
+	Context *uint32,
+	ReturnLength *uint32) NtStatus {
+	r0, _, _ := procNtQueryDirectoryObject.Call(uintptr(DirectoryHandle),
+		uintptr(unsafe.Pointer(Buffer)),
+		uintptr(Length),
+		fromBool(ReturnSingleEntry),
+		fromBool(RestartScan),
+		uintptr(unsafe.Pointer(Context)),
+		uintptr(unsafe.Pointer(ReturnLength)))
 	return NtStatus(r0)
 }
 
-func NtOpenSymbolicLinkObject(LinkHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes) NtStatus {
-	r0, _, _ := procNtOpenSymbolicLinkObject.Call(uintptr(unsafe.Pointer(LinkHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)))
+// OUT-parameter: LinkHandle.
+func NtOpenSymbolicLinkObject(LinkHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes) NtStatus {
+	r0, _, _ := procNtOpenSymbolicLinkObject.Call(uintptr(unsafe.Pointer(LinkHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)))
 	return NtStatus(r0)
 }
 
-func NtQuerySymbolicLinkObject(LinkHandle Handle, LinkTarget *UnicodeString, ReturnedLength *uint32) NtStatus {
-	r0, _, _ := procNtQuerySymbolicLinkObject.Call(uintptr(LinkHandle), uintptr(unsafe.Pointer(LinkTarget)), uintptr(unsafe.Pointer(ReturnedLength)))
+// OUT-parameter: ReturnedLength.
+// INOUT-parameter: LinkTarget.
+// *OPT-parameter: ReturnedLength.
+func NtQuerySymbolicLinkObject(LinkHandle Handle,
+	LinkTarget *UnicodeString,
+	ReturnedLength *uint32) NtStatus {
+	r0, _, _ := procNtQuerySymbolicLinkObject.Call(uintptr(LinkHandle),
+		uintptr(unsafe.Pointer(LinkTarget)),
+		uintptr(unsafe.Pointer(ReturnedLength)))
 	return NtStatus(r0)
 }
 
-func NtCreateSymbolicLinkObject(SymbolicLinkHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, TargetName *UnicodeString) NtStatus {
-	r0, _, _ := procNtCreateSymbolicLinkObject.Call(uintptr(unsafe.Pointer(SymbolicLinkHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(unsafe.Pointer(TargetName)))
+// OUT-parameter: SymbolicLinkHandle.
+func NtCreateSymbolicLinkObject(SymbolicLinkHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	TargetName *UnicodeString) NtStatus {
+	r0, _, _ := procNtCreateSymbolicLinkObject.Call(uintptr(unsafe.Pointer(SymbolicLinkHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(TargetName)))
 	return NtStatus(r0)
 }
 
-func NtCreateDirectoryObject(DirectoryHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes) NtStatus {
-	r0, _, _ := procNtCreateDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)))
+// OUT-parameter: DirectoryHandle.
+func NtCreateDirectoryObject(DirectoryHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes) NtStatus {
+	r0, _, _ := procNtCreateDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)))
 	return NtStatus(r0)
 }
