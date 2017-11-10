@@ -151,13 +151,45 @@ type KeyValuePartialInformationT struct {
 	Data       [1]byte
 }
 
-func NtCreateKey(KeyHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, TitleIndex uint32, Class *UnicodeString, CreateOptions uint32, Disposition *uint32) NtStatus {
-	r0, _, _ := procNtCreateKey.Call(uintptr(unsafe.Pointer(KeyHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(TitleIndex), uintptr(unsafe.Pointer(Class)), uintptr(CreateOptions), uintptr(unsafe.Pointer(Disposition)))
+// OUT-parameter: KeyHandle, Disposition.
+// RESERVED-parameter: TitleIndex.
+// *OPT-parameter: Class, Disposition.
+func NtCreateKey(KeyHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	TitleIndex uint32,
+	Class *UnicodeString,
+	CreateOptions uint32,
+	Disposition *uint32) NtStatus {
+	r0, _, _ := procNtCreateKey.Call(uintptr(unsafe.Pointer(KeyHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(TitleIndex),
+		uintptr(unsafe.Pointer(Class)),
+		uintptr(CreateOptions),
+		uintptr(unsafe.Pointer(Disposition)))
 	return NtStatus(r0)
 }
 
-func NtCreateKeyTransacted(KeyHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, TitleIndex uint32, Class *UnicodeString, CreateOptions uint32, TransactionHandle Handle, Disposition *uint32) NtStatus {
-	r0, _, _ := procNtCreateKeyTransacted.Call(uintptr(unsafe.Pointer(KeyHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(TitleIndex), uintptr(unsafe.Pointer(Class)), uintptr(CreateOptions), uintptr(TransactionHandle), uintptr(unsafe.Pointer(Disposition)))
+// OUT-parameter: KeyHandle, Disposition.
+// RESERVED-parameter: TitleIndex.
+// *OPT-parameter: Class, Disposition.
+func NtCreateKeyTransacted(KeyHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	TitleIndex uint32,
+	Class *UnicodeString,
+	CreateOptions uint32,
+	TransactionHandle Handle,
+	Disposition *uint32) NtStatus {
+	r0, _, _ := procNtCreateKeyTransacted.Call(uintptr(unsafe.Pointer(KeyHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(TitleIndex),
+		uintptr(unsafe.Pointer(Class)),
+		uintptr(CreateOptions),
+		uintptr(TransactionHandle),
+		uintptr(unsafe.Pointer(Disposition)))
 	return NtStatus(r0)
 }
 
@@ -166,18 +198,44 @@ func NtDeleteKey(KeyHandle Handle) NtStatus {
 	return NtStatus(r0)
 }
 
-func NtDeleteValueKey(KeyHandle Handle, ValueName *UnicodeString) NtStatus {
-	r0, _, _ := procNtDeleteValueKey.Call(uintptr(KeyHandle), uintptr(unsafe.Pointer(ValueName)))
+func NtDeleteValueKey(KeyHandle Handle,
+	ValueName *UnicodeString) NtStatus {
+	r0, _, _ := procNtDeleteValueKey.Call(uintptr(KeyHandle),
+		uintptr(unsafe.Pointer(ValueName)))
 	return NtStatus(r0)
 }
 
-func NtEnumerateKey(KeyHandle Handle, Index uint32, KeyInformationClass KeyInformationClass, KeyInformation *byte, Length uint32, ResultLength *uint32) NtStatus {
-	r0, _, _ := procNtEnumerateKey.Call(uintptr(KeyHandle), uintptr(Index), uintptr(KeyInformationClass), uintptr(unsafe.Pointer(KeyInformation)), uintptr(Length), uintptr(unsafe.Pointer(ResultLength)))
+// OUT-parameter: KeyInformation, ResultLength.
+// *OPT-parameter: KeyInformation.
+func NtEnumerateKey(KeyHandle Handle,
+	Index uint32,
+	KeyInformationClass KeyInformationClass,
+	KeyInformation *byte,
+	Length uint32,
+	ResultLength *uint32) NtStatus {
+	r0, _, _ := procNtEnumerateKey.Call(uintptr(KeyHandle),
+		uintptr(Index),
+		uintptr(KeyInformationClass),
+		uintptr(unsafe.Pointer(KeyInformation)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ResultLength)))
 	return NtStatus(r0)
 }
 
-func NtEnumerateValueKey(KeyHandle Handle, Index uint32, KeyValueInformationClass KeyValueInformationClass, KeyValueInformation *byte, Length uint32, ResultLength *uint32) NtStatus {
-	r0, _, _ := procNtEnumerateValueKey.Call(uintptr(KeyHandle), uintptr(Index), uintptr(KeyValueInformationClass), uintptr(unsafe.Pointer(KeyValueInformation)), uintptr(Length), uintptr(unsafe.Pointer(ResultLength)))
+// OUT-parameter: KeyValueInformation, ResultLength.
+// *OPT-parameter: KeyValueInformation.
+func NtEnumerateValueKey(KeyHandle Handle,
+	Index uint32,
+	KeyValueInformationClass KeyValueInformationClass,
+	KeyValueInformation *byte,
+	Length uint32,
+	ResultLength *uint32) NtStatus {
+	r0, _, _ := procNtEnumerateValueKey.Call(uintptr(KeyHandle),
+		uintptr(Index),
+		uintptr(KeyValueInformationClass),
+		uintptr(unsafe.Pointer(KeyValueInformation)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ResultLength)))
 	return NtStatus(r0)
 }
 
@@ -186,57 +244,176 @@ func NtFlushKey(KeyHandle Handle) NtStatus {
 	return NtStatus(r0)
 }
 
-func NtNotifyChangeKey(KeyHandle Handle, Event Handle, ApcRoutine *IoApcRoutine, ApcContext *byte, IoStatusBlock *IoStatusBlock, CompletionFilter uint32, WatchTree bool, Buffer *byte, BufferSize uint32, Asynchronous bool) NtStatus {
-	r0, _, _ := procNtNotifyChangeKey.Call(uintptr(KeyHandle), uintptr(Event), uintptr(unsafe.Pointer(ApcRoutine)), uintptr(unsafe.Pointer(ApcContext)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(CompletionFilter), fromBool(WatchTree), uintptr(unsafe.Pointer(Buffer)), uintptr(BufferSize), fromBool(Asynchronous))
+// OUT-parameter: IoStatusBlock, Buffer.
+// *OPT-parameter: Event, ApcRoutine, ApcContext, Buffer.
+func NtNotifyChangeKey(KeyHandle Handle,
+	Event Handle,
+	ApcRoutine *IoApcRoutine,
+	ApcContext *byte,
+	IoStatusBlock *IoStatusBlock,
+	CompletionFilter uint32,
+	WatchTree bool,
+	Buffer *byte,
+	BufferSize uint32,
+	Asynchronous bool) NtStatus {
+	r0, _, _ := procNtNotifyChangeKey.Call(uintptr(KeyHandle),
+		uintptr(Event),
+		uintptr(unsafe.Pointer(ApcRoutine)),
+		uintptr(unsafe.Pointer(ApcContext)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(CompletionFilter),
+		fromBool(WatchTree),
+		uintptr(unsafe.Pointer(Buffer)),
+		uintptr(BufferSize),
+		fromBool(Asynchronous))
 	return NtStatus(r0)
 }
 
-func NtNotifyChangeMultipleKeys(MasterKeyHandle Handle, Count uint32, SubordinateObjects *ObjectAttributes, Event Handle, ApcRoutine *IoApcRoutine, ApcContext *byte, IoStatusBlock *IoStatusBlock, CompletionFilter uint32, WatchTree bool, Buffer *byte, BufferSize uint32, Asynchronous bool) NtStatus {
-	r0, _, _ := procNtNotifyChangeMultipleKeys.Call(uintptr(MasterKeyHandle), uintptr(Count), uintptr(unsafe.Pointer(SubordinateObjects)), uintptr(Event), uintptr(unsafe.Pointer(ApcRoutine)), uintptr(unsafe.Pointer(ApcContext)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(CompletionFilter), fromBool(WatchTree), uintptr(unsafe.Pointer(Buffer)), uintptr(BufferSize), fromBool(Asynchronous))
+// OUT-parameter: IoStatusBlock, Buffer.
+// *OPT-parameter: Count, SubordinateObjects, Event, ApcRoutine, ApcContext, Buffer.
+func NtNotifyChangeMultipleKeys(MasterKeyHandle Handle,
+	Count uint32,
+	SubordinateObjects *ObjectAttributes,
+	Event Handle,
+	ApcRoutine *IoApcRoutine,
+	ApcContext *byte,
+	IoStatusBlock *IoStatusBlock,
+	CompletionFilter uint32,
+	WatchTree bool,
+	Buffer *byte,
+	BufferSize uint32,
+	Asynchronous bool) NtStatus {
+	r0, _, _ := procNtNotifyChangeMultipleKeys.Call(uintptr(MasterKeyHandle),
+		uintptr(Count),
+		uintptr(unsafe.Pointer(SubordinateObjects)),
+		uintptr(Event),
+		uintptr(unsafe.Pointer(ApcRoutine)),
+		uintptr(unsafe.Pointer(ApcContext)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(CompletionFilter),
+		fromBool(WatchTree),
+		uintptr(unsafe.Pointer(Buffer)),
+		uintptr(BufferSize),
+		fromBool(Asynchronous))
 	return NtStatus(r0)
 }
 
-func NtOpenKey(KeyHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes) NtStatus {
-	r0, _, _ := procNtOpenKey.Call(uintptr(unsafe.Pointer(KeyHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)))
+// OUT-parameter: KeyHandle.
+func NtOpenKey(KeyHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes) NtStatus {
+	r0, _, _ := procNtOpenKey.Call(uintptr(unsafe.Pointer(KeyHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)))
 	return NtStatus(r0)
 }
 
-func NtOpenKeyTransacted(KeyHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, TransactionHandle Handle) NtStatus {
-	r0, _, _ := procNtOpenKeyTransacted.Call(uintptr(unsafe.Pointer(KeyHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(TransactionHandle))
+// OUT-parameter: KeyHandle.
+func NtOpenKeyTransacted(KeyHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	TransactionHandle Handle) NtStatus {
+	r0, _, _ := procNtOpenKeyTransacted.Call(uintptr(unsafe.Pointer(KeyHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(TransactionHandle))
 	return NtStatus(r0)
 }
 
-func NtOpenKeyTransactedEx(KeyHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, OpenOptions uint32, TransactionHandle Handle) NtStatus {
-	r0, _, _ := procNtOpenKeyTransactedEx.Call(uintptr(unsafe.Pointer(KeyHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(OpenOptions), uintptr(TransactionHandle))
+// OUT-parameter: KeyHandle.
+func NtOpenKeyTransactedEx(KeyHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	OpenOptions uint32,
+	TransactionHandle Handle) NtStatus {
+	r0, _, _ := procNtOpenKeyTransactedEx.Call(uintptr(unsafe.Pointer(KeyHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(OpenOptions),
+		uintptr(TransactionHandle))
 	return NtStatus(r0)
 }
 
-func NtQueryKey(KeyHandle Handle, KeyInformationClass KeyInformationClass, KeyInformation *byte, Length uint32, ResultLength *uint32) NtStatus {
-	r0, _, _ := procNtQueryKey.Call(uintptr(KeyHandle), uintptr(KeyInformationClass), uintptr(unsafe.Pointer(KeyInformation)), uintptr(Length), uintptr(unsafe.Pointer(ResultLength)))
+// OUT-parameter: KeyInformation, ResultLength.
+// *OPT-parameter: KeyInformation.
+func NtQueryKey(KeyHandle Handle,
+	KeyInformationClass KeyInformationClass,
+	KeyInformation *byte,
+	Length uint32,
+	ResultLength *uint32) NtStatus {
+	r0, _, _ := procNtQueryKey.Call(uintptr(KeyHandle),
+		uintptr(KeyInformationClass),
+		uintptr(unsafe.Pointer(KeyInformation)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ResultLength)))
 	return NtStatus(r0)
 }
 
-func NtQueryMultipleValueKey(KeyHandle Handle, ValueEntries *KeyValueEntry, EntryCount uint32, ValueBuffer *byte, BufferLength *uint32, RequiredBufferLength *uint32) NtStatus {
-	r0, _, _ := procNtQueryMultipleValueKey.Call(uintptr(KeyHandle), uintptr(unsafe.Pointer(ValueEntries)), uintptr(EntryCount), uintptr(unsafe.Pointer(ValueBuffer)), uintptr(unsafe.Pointer(BufferLength)), uintptr(unsafe.Pointer(RequiredBufferLength)))
+// OUT-parameter: ValueBuffer, RequiredBufferLength.
+// INOUT-parameter: ValueEntries, BufferLength.
+// *OPT-parameter: RequiredBufferLength.
+func NtQueryMultipleValueKey(KeyHandle Handle,
+	ValueEntries *KeyValueEntry,
+	EntryCount uint32,
+	ValueBuffer *byte,
+	BufferLength *uint32,
+	RequiredBufferLength *uint32) NtStatus {
+	r0, _, _ := procNtQueryMultipleValueKey.Call(uintptr(KeyHandle),
+		uintptr(unsafe.Pointer(ValueEntries)),
+		uintptr(EntryCount),
+		uintptr(unsafe.Pointer(ValueBuffer)),
+		uintptr(unsafe.Pointer(BufferLength)),
+		uintptr(unsafe.Pointer(RequiredBufferLength)))
 	return NtStatus(r0)
 }
 
-func NtQueryValueKey(KeyHandle Handle, ValueName *UnicodeString, KeyValueInformationClass KeyValueInformationClass, KeyValueInformation *byte, Length uint32, ResultLength *uint32) NtStatus {
-	r0, _, _ := procNtQueryValueKey.Call(uintptr(KeyHandle), uintptr(unsafe.Pointer(ValueName)), uintptr(KeyValueInformationClass), uintptr(unsafe.Pointer(KeyValueInformation)), uintptr(Length), uintptr(unsafe.Pointer(ResultLength)))
+// OUT-parameter: KeyValueInformation, ResultLength.
+// *OPT-parameter: KeyValueInformation.
+func NtQueryValueKey(KeyHandle Handle,
+	ValueName *UnicodeString,
+	KeyValueInformationClass KeyValueInformationClass,
+	KeyValueInformation *byte,
+	Length uint32,
+	ResultLength *uint32) NtStatus {
+	r0, _, _ := procNtQueryValueKey.Call(uintptr(KeyHandle),
+		uintptr(unsafe.Pointer(ValueName)),
+		uintptr(KeyValueInformationClass),
+		uintptr(unsafe.Pointer(KeyValueInformation)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ResultLength)))
 	return NtStatus(r0)
 }
 
-func NtRenameKey(KeyHandle Handle, NewName *UnicodeString) NtStatus {
-	r0, _, _ := procNtRenameKey.Call(uintptr(KeyHandle), uintptr(unsafe.Pointer(NewName)))
+func NtRenameKey(KeyHandle Handle,
+	NewName *UnicodeString) NtStatus {
+	r0, _, _ := procNtRenameKey.Call(uintptr(KeyHandle),
+		uintptr(unsafe.Pointer(NewName)))
 	return NtStatus(r0)
 }
 
-func NtSetInformationKey(KeyHandle Handle, KeySetInformationClass KeySetInformationClass, KeySetInformation *byte, KeySetInformationLength uint32) NtStatus {
-	r0, _, _ := procNtSetInformationKey.Call(uintptr(KeyHandle), uintptr(KeySetInformationClass), uintptr(unsafe.Pointer(KeySetInformation)), uintptr(KeySetInformationLength))
+func NtSetInformationKey(KeyHandle Handle,
+	KeySetInformationClass KeySetInformationClass,
+	KeySetInformation *byte,
+	KeySetInformationLength uint32) NtStatus {
+	r0, _, _ := procNtSetInformationKey.Call(uintptr(KeyHandle),
+		uintptr(KeySetInformationClass),
+		uintptr(unsafe.Pointer(KeySetInformation)),
+		uintptr(KeySetInformationLength))
 	return NtStatus(r0)
 }
 
-func NtSetValueKey(KeyHandle Handle, ValueName *UnicodeString, TitleIndex uint32, Type uint32, Data *byte, DataSize uint32) NtStatus {
-	r0, _, _ := procNtSetValueKey.Call(uintptr(KeyHandle), uintptr(unsafe.Pointer(ValueName)), uintptr(TitleIndex), uintptr(Type), uintptr(unsafe.Pointer(Data)), uintptr(DataSize))
+// *OPT-parameter: TitleIndex, Data.
+func NtSetValueKey(KeyHandle Handle,
+	ValueName *UnicodeString,
+	TitleIndex uint32,
+	Type uint32,
+	Data *byte,
+	DataSize uint32) NtStatus {
+	r0, _, _ := procNtSetValueKey.Call(uintptr(KeyHandle),
+		uintptr(unsafe.Pointer(ValueName)),
+		uintptr(TitleIndex),
+		uintptr(Type),
+		uintptr(unsafe.Pointer(Data)),
+		uintptr(DataSize))
 	return NtStatus(r0)
 }
