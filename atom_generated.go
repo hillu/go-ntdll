@@ -50,6 +50,7 @@ func NtDeleteAtom(Atom RtlAtom) NtStatus {
 }
 
 // OUT-parameter: Atom.
+// *OPT-parameter: Atom.
 func NtFindAtom(AtomName *uint16,
 	Length uint32,
 	Atom *RtlAtom) NtStatus {
