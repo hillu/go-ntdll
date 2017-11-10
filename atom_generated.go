@@ -49,13 +49,13 @@ func NtDeleteAtom(Atom RtlAtom) NtStatus {
 	return NtStatus(r0)
 }
 
-// OUT-parameter: OPTIONAL.
+// OUT-parameter: Atom.
 func NtFindAtom(AtomName *uint16,
 	Length uint32,
-	OPTIONAL *RtlAtom) NtStatus {
+	Atom *RtlAtom) NtStatus {
 	r0, _, _ := procNtFindAtom.Call(uintptr(unsafe.Pointer(AtomName)),
 		uintptr(Length),
-		uintptr(unsafe.Pointer(OPTIONAL)))
+		uintptr(unsafe.Pointer(Atom)))
 	return NtStatus(r0)
 }
 

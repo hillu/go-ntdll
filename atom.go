@@ -29,7 +29,7 @@ func:
 NTSTATUS NtFindAtom(
   _In_  PWCHAR    AtomName,
   _In_  ULONG     Length,
-  _Out_ PRTL_ATOM Atom OPTIONAL );
+  _Out_ PRTL_ATOM Atom);
 */
 
 /*
