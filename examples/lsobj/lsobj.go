@@ -28,8 +28,8 @@ func Walk(entry string, fn WalkFunc) error {
 		var buf [32768]byte
 		var length uint32
 		switch st := ntdll.NtQueryDirectoryObject(h, &buf[0], uint32(len(buf)), true, context == 0, &context, &length); st {
-		case 0:
-		case 0x8000001a: // STATUS_NO_MORE_ENTRIES
+		case ntdll.STATUS_SUCCESS: // 0
+		case ntdll.STATUS_NO_MORE_ENTRIES: // 0x8000001a
 			return nil
 		default:
 			return st.Error()
