@@ -432,32 +432,119 @@ type FileCompletionInformationT struct {
 	Key  *byte
 }
 
-func NtCreateFile(FileHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, IoStatusBlock *IoStatusBlock, AllocationSize *int64, FileAttributes uint32, ShareAccess uint32, CreateDisposition uint32, CreateOptions uint32, EaBuffer *byte, EaLength uint32) NtStatus {
-	r0, _, _ := procNtCreateFile.Call(uintptr(unsafe.Pointer(FileHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(unsafe.Pointer(AllocationSize)), uintptr(FileAttributes), uintptr(ShareAccess), uintptr(CreateDisposition), uintptr(CreateOptions), uintptr(unsafe.Pointer(EaBuffer)), uintptr(EaLength))
+// OUT-parameter: FileHandle, IoStatusBlock.
+// *OPT-parameter: AllocationSize.
+func NtCreateFile(FileHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	IoStatusBlock *IoStatusBlock,
+	AllocationSize *int64,
+	FileAttributes uint32,
+	ShareAccess uint32,
+	CreateDisposition uint32,
+	CreateOptions uint32,
+	EaBuffer *byte,
+	EaLength uint32) NtStatus {
+	r0, _, _ := procNtCreateFile.Call(uintptr(unsafe.Pointer(FileHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(unsafe.Pointer(AllocationSize)),
+		uintptr(FileAttributes),
+		uintptr(ShareAccess),
+		uintptr(CreateDisposition),
+		uintptr(CreateOptions),
+		uintptr(unsafe.Pointer(EaBuffer)),
+		uintptr(EaLength))
 	return NtStatus(r0)
 }
 
-func NtOpenFile(FileHandle *Handle, DesiredAccess AccessMask, ObjectAttributes *ObjectAttributes, IoStatusBlock *IoStatusBlock, ShareAccess uint32, OpenOptions uint32) NtStatus {
-	r0, _, _ := procNtOpenFile.Call(uintptr(unsafe.Pointer(FileHandle)), uintptr(DesiredAccess), uintptr(unsafe.Pointer(ObjectAttributes)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(ShareAccess), uintptr(OpenOptions))
+// OUT-parameter: FileHandle, IoStatusBlock.
+func NtOpenFile(FileHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	IoStatusBlock *IoStatusBlock,
+	ShareAccess uint32,
+	OpenOptions uint32) NtStatus {
+	r0, _, _ := procNtOpenFile.Call(uintptr(unsafe.Pointer(FileHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(ShareAccess),
+		uintptr(OpenOptions))
 	return NtStatus(r0)
 }
 
-func NtQueryInformationFile(FileHandle Handle, IoStatusBlock *IoStatusBlock, FileInformation *byte, Length uint32, FileInformationClass FileInformationClass) NtStatus {
-	r0, _, _ := procNtQueryInformationFile.Call(uintptr(FileHandle), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(unsafe.Pointer(FileInformation)), uintptr(Length), uintptr(FileInformationClass))
+// OUT-parameter: IoStatusBlock, FileInformation.
+func NtQueryInformationFile(FileHandle Handle,
+	IoStatusBlock *IoStatusBlock,
+	FileInformation *byte,
+	Length uint32,
+	FileInformationClass FileInformationClass) NtStatus {
+	r0, _, _ := procNtQueryInformationFile.Call(uintptr(FileHandle),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(unsafe.Pointer(FileInformation)),
+		uintptr(Length),
+		uintptr(FileInformationClass))
 	return NtStatus(r0)
 }
 
-func NtReadFile(FileHandle Handle, Event Handle, ApcRoutine *IoApcRoutine, ApcContext *byte, IoStatusBlock *IoStatusBlock, Buffer *byte, Length uint32, ByteOffset *int64, Key *uint32) NtStatus {
-	r0, _, _ := procNtReadFile.Call(uintptr(FileHandle), uintptr(Event), uintptr(unsafe.Pointer(ApcRoutine)), uintptr(unsafe.Pointer(ApcContext)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(unsafe.Pointer(Buffer)), uintptr(Length), uintptr(unsafe.Pointer(ByteOffset)), uintptr(unsafe.Pointer(Key)))
+// OUT-parameter: IoStatusBlock, Buffer.
+// *OPT-parameter: Event, ApcRoutine, ApcContext, ByteOffset, Key.
+func NtReadFile(FileHandle Handle,
+	Event Handle,
+	ApcRoutine *IoApcRoutine,
+	ApcContext *byte,
+	IoStatusBlock *IoStatusBlock,
+	Buffer *byte,
+	Length uint32,
+	ByteOffset *int64,
+	Key *uint32) NtStatus {
+	r0, _, _ := procNtReadFile.Call(uintptr(FileHandle),
+		uintptr(Event),
+		uintptr(unsafe.Pointer(ApcRoutine)),
+		uintptr(unsafe.Pointer(ApcContext)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(unsafe.Pointer(Buffer)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ByteOffset)),
+		uintptr(unsafe.Pointer(Key)))
 	return NtStatus(r0)
 }
 
-func NtSetInformationFile2(FileHandle Handle, IoStatusBlock *IoStatusBlock, FileInformation *byte, Length uint32, FileInformationClass FileInformationClass) NtStatus {
-	r0, _, _ := procNtSetInformationFile2.Call(uintptr(FileHandle), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(unsafe.Pointer(FileInformation)), uintptr(Length), uintptr(FileInformationClass))
+// OUT-parameter: IoStatusBlock.
+func NtSetInformationFile2(FileHandle Handle,
+	IoStatusBlock *IoStatusBlock,
+	FileInformation *byte,
+	Length uint32,
+	FileInformationClass FileInformationClass) NtStatus {
+	r0, _, _ := procNtSetInformationFile2.Call(uintptr(FileHandle),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(unsafe.Pointer(FileInformation)),
+		uintptr(Length),
+		uintptr(FileInformationClass))
 	return NtStatus(r0)
 }
 
-func NtWriteFile(FileHandle Handle, Event Handle, ApcRoutine *IoApcRoutine, ApcContext *byte, IoStatusBlock *IoStatusBlock, Buffer *byte, Length uint32, ByteOffset *int64, Key *uint32) NtStatus {
-	r0, _, _ := procNtWriteFile.Call(uintptr(FileHandle), uintptr(Event), uintptr(unsafe.Pointer(ApcRoutine)), uintptr(unsafe.Pointer(ApcContext)), uintptr(unsafe.Pointer(IoStatusBlock)), uintptr(unsafe.Pointer(Buffer)), uintptr(Length), uintptr(unsafe.Pointer(ByteOffset)), uintptr(unsafe.Pointer(Key)))
+// OUT-parameter: IoStatusBlock.
+// *OPT-parameter: Event, ApcRoutine, ApcContext, ByteOffset, Key.
+func NtWriteFile(FileHandle Handle,
+	Event Handle,
+	ApcRoutine *IoApcRoutine,
+	ApcContext *byte,
+	IoStatusBlock *IoStatusBlock,
+	Buffer *byte,
+	Length uint32,
+	ByteOffset *int64,
+	Key *uint32) NtStatus {
+	r0, _, _ := procNtWriteFile.Call(uintptr(FileHandle),
+		uintptr(Event),
+		uintptr(unsafe.Pointer(ApcRoutine)),
+		uintptr(unsafe.Pointer(ApcContext)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(unsafe.Pointer(Buffer)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(ByteOffset)),
+		uintptr(unsafe.Pointer(Key)))
 	return NtStatus(r0)
 }
