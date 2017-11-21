@@ -43,8 +43,12 @@ type Direction int
 const (
 	DirectionUnspecified Direction = iota
 	DirectionIn
+	DirectionInOpt
 	DirectionOut
+	DirectionOutOpt
 	DirectionInOut
+	DirectionInOutOpt
+	DirectionReserved
 )
 
 type FunctionParameterDefinition struct {
@@ -185,17 +189,26 @@ func ParseFunctionDefinition(rd io.Reader) (*FunctionDefinition, error) {
 				if len(tokens) < 2 {
 					return nil, fmt.Errorf("function parameter needs at least a name and a type")
 				}
+
 				p := FunctionParameterDefinition{Name: tokens[0]}
+
 				var typ string
 				for _, t := range tokens[1:] {
 					switch t {
-					case "_In_", "_In_opt_":
+					case "_In_":
 						p.Direction = DirectionIn
-					case "_Out_", "_Out_opt_":
+					case "_In_opt_":
+						p.Direction = DirectionInOpt
+					case "_Out_":
 						p.Direction = DirectionOut
-					case "_Inout_", "_Inout_opt_":
+					case "_Out_opt_":
+						p.Direction = DirectionOutOpt
+					case "_Inout_":
 						p.Direction = DirectionInOut
+					case "_Inout_opt_":
+						p.Direction = DirectionInOutOpt
 					case "_Reserved_":
+						p.Direction = DirectionReserved
 					default:
 						typ = t
 					}
@@ -561,7 +574,28 @@ type %[1]s struct {
 
 	for _, function := range functions {
 		var plist, alist []string
+		var out, inout, opt, reserved, unknown []string
+		var comment string
 		for _, param := range function.Params {
+			switch param.Direction {
+			case DirectionIn: // default, don't mention
+			case DirectionInOpt:
+				opt = append(opt, param.Name)
+			case DirectionOut:
+				out = append(out, param.Name)
+			case DirectionOutOpt:
+				out = append(out, param.Name)
+				opt = append(opt, param.Name)
+			case DirectionInOut:
+				inout = append(inout, param.Name)
+			case DirectionInOutOpt:
+				inout = append(inout, param.Name)
+				opt = append(opt, param.Name)
+			case DirectionReserved:
+				reserved = append(reserved, param.Name)
+			default:
+				unknown = append(unknown, param.Name)
+			}
 			alist = append(alist, fmt.Sprintf("%s %s", param.Name, param.Type))
 			if param.Type == "bool" {
 				plist = append(plist, fmt.Sprintf("fromBool(%s)", param.Name))
@@ -573,16 +607,32 @@ type %[1]s struct {
 			// alist = append(alist, fmt.Sprintf("p%d %s", n, param.Type))
 			// plist = append(plist, "p"+strconv.Itoa(n))
 		}
+		if len(out) > 0 {
+			comment = fmt.Sprintf("// OUT-parameter: %s.\n", strings.Join(out, ", "))
+		}
+		if len(inout) > 0 {
+			comment += fmt.Sprintf("// INOUT-parameter: %s.\n", strings.Join(inout, ", "))
+		}
+		if len(reserved) > 0 {
+			comment += fmt.Sprintf("// RESERVED-parameter: %s.\n", strings.Join(reserved, ", "))
+		}
+		if len(opt) > 0 {
+			comment += fmt.Sprintf("// *OPT-parameter: %s.\n", strings.Join(opt, ", "))
+		}
+		if len(unknown) > 0 {
+			comment += fmt.Sprintf("// unknown-parameter: %s.\n", strings.Join(unknown, ", "))
+		}
+
 		returnExpression := function.Type + "(r0)"
 		if function.Type == "bool" {
 			returnExpression = "r0 != 0"
 		}
-		fmt.Fprintf(buf, `func %[1]s(%[2]s) %[3]s {
+		fmt.Fprintf(buf, `%[6]sfunc %[1]s(%[2]s) %[3]s {
 	r0, _, _ := proc%[1]s.Call(%[4]s)
 	return %[5]s
 }
 
-`, function.Name, strings.Join(alist, ", "), function.Type, strings.Join(plist, ", "), returnExpression)
+`, function.Name, "\n"+strings.Join(alist, ",\n")+",\n", function.Type, strings.Join(plist, ",\n"), returnExpression, comment)
 	}
 
 	f, err = os.Create(outfile)

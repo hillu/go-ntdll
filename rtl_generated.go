@@ -22,7 +22,17 @@ type RtlpCurdirRef struct {
 	Handle   Handle
 }
 
-func RtlDosPathNameToNtPathName_U(DosFileName *uint16, NtFileName *UnicodeString, FilePart *uint16, RelativeName *RtlRelativeNameU) bool {
-	r0, _, _ := procRtlDosPathNameToNtPathName_U.Call(uintptr(unsafe.Pointer(DosFileName)), uintptr(unsafe.Pointer(NtFileName)), uintptr(unsafe.Pointer(FilePart)), uintptr(unsafe.Pointer(RelativeName)))
+// OUT-parameter: NtFileName, FilePart, RelativeName.
+// *OPT-parameter: FilePart, RelativeName.
+func RtlDosPathNameToNtPathName_U(
+	DosFileName *uint16,
+	NtFileName *UnicodeString,
+	FilePart *uint16,
+	RelativeName *RtlRelativeNameU,
+) bool {
+	r0, _, _ := procRtlDosPathNameToNtPathName_U.Call(uintptr(unsafe.Pointer(DosFileName)),
+		uintptr(unsafe.Pointer(NtFileName)),
+		uintptr(unsafe.Pointer(FilePart)),
+		uintptr(unsafe.Pointer(RelativeName)))
 	return r0 != 0
 }
