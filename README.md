@@ -2,6 +2,7 @@ Go interface to NTDLL functions
 ===============================
 
 [![GoDoc](https://godoc.org/github.com/hillu/go-ntdll?status.svg)](https://godoc.org/github.com/hillu/go-ntdll)
+[![Go Report Card](https://goreportcard.com/badge/github.com/hillu/go-ntdll)](https://goreportcard.com/report/github.com/hillu/go-ntdll)
 
 This package makes selected `NTDLL` funcions directly available in Go
 programs. At the moment, types and functions for accessing kernel
