@@ -11,11 +11,11 @@ import (
 	"github.com/hillu/go-ntdll"
 )
 
-var SkipDir = errors.New("skip this directory")
+var skipDir = errors.New("skip this directory")
 
-type WalkFunc func(string, string) error
+type walkFunc func(string, string) error
 
-func Walk(entry string, fn WalkFunc) error {
+func walk(entry string, fn walkFunc) error {
 	var h ntdll.Handle
 	if st := ntdll.NtOpenDirectoryObject(&h, ntdll.STANDARD_RIGHTS_READ|ntdll.DIRECTORY_QUERY,
 		ntdll.NewObjectAttributes(entry, 0, 0, nil),
@@ -27,9 +27,17 @@ func Walk(entry string, fn WalkFunc) error {
 	for {
 		var buf [32768]byte
 		var length uint32
-		switch st := ntdll.NtQueryDirectoryObject(h, &buf[0], uint32(len(buf)), true, context == 0, &context, &length); st {
-		case ntdll.STATUS_SUCCESS: // 0
-		case ntdll.STATUS_NO_MORE_ENTRIES: // 0x8000001a
+		switch st := ntdll.NtQueryDirectoryObject(
+			h,
+			&buf[0],
+			uint32(len(buf)),
+			true,
+			context == 0,
+			&context,
+			&length,
+		); st {
+		case ntdll.STATUS_SUCCESS:
+		case ntdll.STATUS_NO_MORE_ENTRIES:
 			return nil
 		default:
 			return st.Error()
@@ -43,12 +51,12 @@ func Walk(entry string, fn WalkFunc) error {
 		}
 		switch typ := odi.TypeName.String(); typ {
 		case "Directory":
-			if err := Walk(path, fn); err != nil {
+			if err := walk(path, fn); err != nil {
 				return err
 			}
 		default:
 			switch err := fn(path, typ); err {
-			case SkipDir:
+			case skipDir:
 				return nil
 			case nil:
 				continue
@@ -57,7 +65,6 @@ func Walk(entry string, fn WalkFunc) error {
 			}
 		}
 	}
-	return nil
 }
 
 func main() {
@@ -67,11 +74,13 @@ func main() {
 	} else {
 		arg = "\\"
 	}
-	Walk(arg, func(path, typ string) error {
+	walk(arg, func(path, typ string) error {
 		switch typ {
 		case "SymbolicLink":
 			var h ntdll.Handle
-			if st := ntdll.NtOpenSymbolicLinkObject(&h, ntdll.STANDARD_RIGHTS_READ|ntdll.DIRECTORY_QUERY,
+			if st := ntdll.NtOpenSymbolicLinkObject(
+				&h,
+				ntdll.STANDARD_RIGHTS_READ|ntdll.DIRECTORY_QUERY,
 				ntdll.NewObjectAttributes(path, 0, 0, nil),
 			); st != 0 {
 				fmt.Printf("%s %s -> <NtOpenSymbolicLinkObject error %08x>\n", path, typ, st)
@@ -80,7 +89,11 @@ func main() {
 			defer ntdll.NtClose(h)
 			target := ntdll.NewEmptyUnicodeString(1024)
 			var length uint32
-			if st := ntdll.NtQuerySymbolicLinkObject(h, target, &length); st != 0 {
+			if st := ntdll.NtQuerySymbolicLinkObject(
+				h,
+				target,
+				&length,
+			); st != 0 {
 				fmt.Printf("%s %s -> <NtQuerySymbolicLinkObject error %08x>\n", path, typ, st)
 				return nil
 			}
