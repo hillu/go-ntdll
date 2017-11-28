@@ -116,10 +116,11 @@ func main() {
 	// Write the constants
 	code.WriteString("const (\n")
 	for i, s := range list {
+		fmt.Fprintf(code, "// %s\n", s.desc)
 		if i == 0 {
-			fmt.Fprintf(code, "%s NtStatus = 0x%08X // %s\n", s.name, s.val, s.desc)
+			fmt.Fprintf(code, "%s NtStatus = 0x%08X\n", s.name, s.val)
 		} else {
-			fmt.Fprintf(code, "%s = 0x%08X // %s\n", s.name, s.val, s.desc)
+			fmt.Fprintf(code, "%s = 0x%08X\n", s.name, s.val)
 		}
 	}
 	code.WriteString(")\n\n")
