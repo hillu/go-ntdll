@@ -77,6 +77,7 @@ const (
 
 var (
 	procNtCreateFile           = modntdll.NewProc("NtCreateFile")
+	procNtDeviceIoControlFile  = modntdll.NewProc("NtDeviceIoControlFile")
 	procNtOpenFile             = modntdll.NewProc("NtOpenFile")
 	procNtQueryInformationFile = modntdll.NewProc("NtQueryInformationFile")
 	procNtReadFile             = modntdll.NewProc("NtReadFile")
@@ -458,6 +459,32 @@ func NtCreateFile(
 		uintptr(CreateOptions),
 		uintptr(unsafe.Pointer(EaBuffer)),
 		uintptr(EaLength))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: IoStatusBlock, OutputBuffer.
+func NtDeviceIoControlFile(
+	FileHandle Handle,
+	Event Handle,
+	ApcRoutine *IoApcRoutine,
+	ApcContext *byte,
+	IoStatusBlock *IoStatusBlock,
+	IoControlCode uint32,
+	InputBuffer *byte,
+	InputBufferLength uint32,
+	OutputBuffer *byte,
+	OutputBufferLength uint32,
+) NtStatus {
+	r0, _, _ := procNtDeviceIoControlFile.Call(uintptr(FileHandle),
+		uintptr(Event),
+		uintptr(unsafe.Pointer(ApcRoutine)),
+		uintptr(unsafe.Pointer(ApcContext)),
+		uintptr(unsafe.Pointer(IoStatusBlock)),
+		uintptr(IoControlCode),
+		uintptr(unsafe.Pointer(InputBuffer)),
+		uintptr(InputBufferLength),
+		uintptr(unsafe.Pointer(OutputBuffer)),
+		uintptr(OutputBufferLength))
 	return NtStatus(r0)
 }
 

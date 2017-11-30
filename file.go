@@ -22,6 +22,22 @@ NTSTATUS NtCreateFile(
 
 /*
 func:
+NTSTATUS NtDeviceIoControlFile(
+  _In_  HANDLE           FileHandle,
+  _In_  HANDLE           Event,
+  _In_  PIO_APC_ROUTINE  ApcRoutine,
+  _In_  PVOID            ApcContext,
+  _Out_ PIO_STATUS_BLOCK IoStatusBlock,
+  _In_  ULONG            IoControlCode,
+  _In_  PVOID            InputBuffer,
+  _In_  ULONG            InputBufferLength,
+  _Out_ PVOID            OutputBuffer,
+  _In_  ULONG            OutputBufferLength
+);
+*/
+
+/*
+func:
 NTSTATUS NtOpenFile(
   _Out_ PHANDLE            FileHandle,
   _In_  ACCESS_MASK        DesiredAccess,
