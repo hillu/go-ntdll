@@ -71,7 +71,7 @@ NTSTATUS NtLockFile(
   _In_     BOOLEAN          ExclusiveLock
 );
 */
-	
+
 /*
 func:
 NTSTATUS NtOpenFile(
@@ -126,7 +126,7 @@ NTSTATUS NtQueryQuotaInformationFile(
   _In_     BOOLEAN          ReturnSingleEntry,
   _In_opt_ PVOID            SidList, // _In_reads_bytes_opt_(SidListLength)
   _In_     ULONG            SidListLength,
-  // _In_reads_bytes_opt_((8 + (4 * ((SID *)StartSid)->SubAuthorityCount))) // SeLengthSid() // 
+  // _In_reads_bytes_opt_((8 + (4 * ((SID *)StartSid)->SubAuthorityCount))) // SeLengthSid() //
   _In_opt_ PSID             StartSid,
   _In_     BOOLEAN          RestartScan
 );
@@ -165,17 +165,6 @@ NTSTATUS NtReadFile(
 /*
 func:
 NTSTATUS NtSetInformationFile(
-  _In_  HANDLE                 FileHandle,
-  _Out_ PIO_STATUS_BLOCK       IoStatusBlock,
-  _In_  PVOID                  FileInformation,
-  _In_  ULONG                  Length,
-  _In_  FILE_INFORMATION_CLASS FileInformationClass
-);
-*/
-
-/*
-func:
-NTSTATUS NtSetInformationFile2(
   _In_  HANDLE                 FileHandle,
   _Out_ PIO_STATUS_BLOCK       IoStatusBlock,
   _In_  PVOID                  FileInformation,
@@ -236,7 +225,7 @@ _In_  PLARGE_INTEGER   Length,
 _In_  ULONG            Key
 );
 */
-	
+
 /*
 enum:
 typedef enum _FILE_INFORMATION_CLASS {
