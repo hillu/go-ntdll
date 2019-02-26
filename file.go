@@ -36,6 +36,42 @@ NTSTATUS NtDeviceIoControlFile(
 );
 */
 
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6513
+
+/*
+func:
+NTSTATUS NtFsControlFile(
+  _In_      HANDLE           FileHandle,
+  _In_opt_  HANDLE           Event,
+  _In_opt_  PIO_APC_ROUTINE  ApcRoutine,
+  _In_opt_  PVOID            ApcContext,
+  _Out_     PIO_STATUS_BLOCK IoStatusBlock,
+  _In_      ULONG            FsControlCode,
+  _In_opt_  PVOID            InputBuffer, // _In_reads_bytes_opt_(InputBufferLength)
+  _In_      ULONG            InputBufferLength,
+  _Out_opt_ PVOID            OutputBuffer, // _Out_writes_bytes_opt_(OutputBufferLength)
+  _In_      ULONG            OutputBufferLength
+);
+*/
+
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6531
+
+/*
+func:
+NTSTATUS NtLockFile(
+  _In_     HANDLE           FileHandle,
+  _In_opt_ HANDLE           Event,
+  _In_opt_ PIO_APC_ROUTINE  ApcRoutine,
+  _In_opt_ PVOID            ApcContext,
+  _Out_    PIO_STATUS_BLOCK IoStatusBlock,
+  _In_     PLARGE_INTEGER   ByteOffset,
+  _In_     PLARGE_INTEGER   Length,
+  _In_     ULONG            Key,
+  _In_     BOOLEAN          FailImmediately,
+  _In_     BOOLEAN          ExclusiveLock
+);
+*/
+	
 /*
 func:
 NTSTATUS NtOpenFile(
@@ -48,6 +84,25 @@ NTSTATUS NtOpenFile(
 );
 */
 
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6563
+
+/*
+func:
+NTSTATUS NtQueryDirectoryFile(
+  _In_     HANDLE                 FileHandle,
+  _In_opt_ HANDLE                 Event,
+  _In_opt_ PIO_APC_ROUTINE        ApcRoutine,
+  _In_opt_ PVOID                  ApcContext,
+  _Out_    PIO_STATUS_BLOCK       IoStatusBlock,
+  _Out_    PVOID                  FileInformation, // _Out_writes_bytes_(Length)
+  _In_     ULONG                  Length,
+  _In_     FILE_INFORMATION_CLASS FileInformationClass,
+  _In_     BOOLEAN                ReturnSingleEntry,
+  _In_opt_ PUNICODE_STRING        FileName,
+  _In_     BOOLEAN                RestartScan
+);
+*/
+
 /*
 func:
 NTSTATUS NtQueryInformationFile(
@@ -56,6 +111,37 @@ NTSTATUS NtQueryInformationFile(
   _Out_ PVOID                  FileInformation,
   _In_  ULONG                  Length,
   _In_  FILE_INFORMATION_CLASS FileInformationClass
+);
+*/
+
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6599
+
+/*
+func:
+NTSTATUS NtQueryQuotaInformationFile(
+  _In_     HANDLE           FileHandle,
+  _Out_    PIO_STATUS_BLOCK IoStatusBlock,
+  _Out_    PVOID            Buffer, // _Out_writes_bytes_(Length)
+  _In_     ULONG            Length,
+  _In_     BOOLEAN          ReturnSingleEntry,
+  _In_opt_ PVOID            SidList, // _In_reads_bytes_opt_(SidListLength)
+  _In_     ULONG            SidListLength,
+  // _In_reads_bytes_opt_((8 + (4 * ((SID *)StartSid)->SubAuthorityCount))) // SeLengthSid() // 
+  _In_opt_ PSID             StartSid,
+  _In_     BOOLEAN          RestartScan
+);
+*/
+
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6617
+
+/*
+func:
+NTSTATUS NtQueryVolumeInformationFile(
+  _In_  HANDLE               FileHandle,
+  _Out_ PIO_STATUS_BLOCK     IoStatusBlock,
+  _Out_ PVOID                FsInformation, // _Out_writes_bytes_(Length)
+  _In_  ULONG                Length,
+  _In_  FS_INFORMATION_CLASS FsInformationClass
 );
 */
 
@@ -74,6 +160,19 @@ NTSTATUS NtReadFile(
 );
 */
 
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6649
+
+/*
+func:
+NTSTATUS NtSetInformationFile(
+  _In_  HANDLE                 FileHandle,
+  _Out_ PIO_STATUS_BLOCK       IoStatusBlock,
+  _In_  PVOID                  FileInformation,
+  _In_  ULONG                  Length,
+  _In_  FILE_INFORMATION_CLASS FileInformationClass
+);
+*/
+
 /*
 func:
 NTSTATUS NtSetInformationFile2(
@@ -83,7 +182,31 @@ NTSTATUS NtSetInformationFile2(
   _In_  ULONG                  Length,
   _In_  FILE_INFORMATION_CLASS FileInformationClass
 );
+*/
 
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6664
+
+/*
+func:
+NTSTATUS NtSetQuotaInformationFile(
+  _In_  HANDLE           FileHandle,
+  _Out_ PIO_STATUS_BLOCK IoStatusBlock,
+  _In_  PVOID            Buffer, // _In_reads_bytes_(Length)
+  _In_  ULONG            Length
+);
+*/
+
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6676
+
+/*
+func:
+NTSTATUS NtSetVolumeInformationFile(
+  _In_  HANDLE               FileHandle,
+  _Out_ PIO_STATUS_BLOCK     IoStatusBlock,
+  _In_  PVOID                FsInformation, // _In_reads_bytes_(Length)
+  _In_  ULONG                Length,
+  _In_  FS_INFORMATION_CLASS FsInformationClass
+);
 */
 
 /*
@@ -101,6 +224,19 @@ NTSTATUS NtWriteFile(
 );
 */
 
+// https://github.com/tpn/winsdk-10/blob/9b69fd26ac0c7d0b83d378dba01080e93349c2ed/Include/10.0.14393.0/km/ntifs.h#L6706
+
+/*
+func:
+NTSTATUS NtUnlockFile(
+_In_  HANDLE           FileHandle,
+_Out_ PIO_STATUS_BLOCK IoStatusBlock,
+_In_  PLARGE_INTEGER   ByteOffset,
+_In_  PLARGE_INTEGER   Length,
+_In_  ULONG            Key
+);
+*/
+	
 /*
 enum:
 typedef enum _FILE_INFORMATION_CLASS {
@@ -612,6 +748,29 @@ typedef struct _FILE_COMPLETION_INFORMATION {
   HANDLE Port;
   PVOID  Key;
 } FILE_COMPLETION_INFORMATION, *PFILE_COMPLETION_INFORMATION;
+*/
+
+// https://github.com/tpn/winsdk-10/blob/master/Include/10.0.14393.0/km/wdm.h#L6709
+
+/*
+enum:
+typedef enum _FS_INFORMATION_CLASS { // _FSINFOCLASS {
+  FileFsVolumeInformation = 1,
+  FileFsLabelInformation,
+  FileFsSizeInformation,
+  FileFsDeviceInformation,
+  FileFsAttributeInformation,
+  FileFsControlInformation,
+  FileFsFullSizeInformation,
+  FileFsObjectIdInformation,
+  FileFsDriverPathInformation,
+  FileFsVolumeFlagsInformation,
+  FileFsSectorSizeInformation,
+  FileFsDataCopyInformation,
+  FileFsMetadataSizeInformation,
+  FileFsFullSizeInformationEx,
+  FileFsMaximumInformation
+} FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
 */
 
 type FileAttributes uint32
