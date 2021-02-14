@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"net/http"
 )
 
 const URL = "https://msdn.microsoft.com/en-us/library/cc704588.aspx"
@@ -34,9 +35,22 @@ func (l StatusList) Less(i, j int) bool { return l[i].val < l[j].val }
 var list StatusList
 
 func main() {
-	doc, err := goquery.NewDocument(URL)
+	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Could not construct request: %v", err)
+	}
+	req.Header.Add("User-Agent", "Mozilla (compatible; ntstatuscrawler.go; https://github.com/hillu/go-ntdll)")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Could not retrieve %s: %v", URL, err)
+	}
+	if res.StatusCode != 200 {
+		log.Fatalf("Expected HTTP status 200, got %s", res.Status)
+	}
+
+	doc, err := goquery.NewDocumentFromResponse(res)
+	if err != nil {
+		log.Fatalf("Could not parse document from %s: %v", URL, err)
 	}
 
 	// This is how the table with the status-codes looks like inside the HTML:
@@ -109,7 +123,10 @@ func main() {
 
 	if sitever, found := doc.Find(`meta[name="ms.sitever"]`).Attr("content"); found {
 		fmt.Fprintf(code, "ms.sitever=%s\n\n", sitever)
+	} else if datetime, found := doc.Find(`time[data-article-date]`).Attr("datetime"); found {
+		fmt.Fprintf(code, "datetime=%s\n\n", datetime)
 	} else {
+		log.Print("Could not find timestamp; using time.Now()")
 		fmt.Fprintf(code, "on %s\n\n", time.Now().Format(time.RFC822))
 	}
 
