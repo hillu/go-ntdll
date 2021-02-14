@@ -104,7 +104,9 @@ func translate(from string) (to string) {
 		return
 	}
 	// recognize pointer types
-	if !strings.HasPrefix(from, "PUBLIC_") && from[0] == 'P' {
+	if from[0] == 'P' &&
+		!strings.HasPrefix(from, "PUBLIC_") &&
+		!strings.HasPrefix(from, "PROCESS") {
 		if rest := translate(from[1:]); rest != "" {
 			return "*" + rest
 		}
