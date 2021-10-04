@@ -5,6 +5,14 @@ package ntdll
 
 import "unsafe"
 
+// The ObjectInformationClass constants have been derived from the OBJECT_INFORMATION_CLASS enum definition.
+type ObjectInformationClass uint32
+
+const (
+	ObjectBasicInformation ObjectInformationClass = 0
+	ObjectTypeInformation                         = 2
+)
+
 var (
 	procNtOpenDirectoryObject      = modntdll.NewProc("NtOpenDirectoryObject")
 	procNtQueryDirectoryObject     = modntdll.NewProc("NtQueryDirectoryObject")
@@ -12,6 +20,7 @@ var (
 	procNtQuerySymbolicLinkObject  = modntdll.NewProc("NtQuerySymbolicLinkObject")
 	procNtCreateSymbolicLinkObject = modntdll.NewProc("NtCreateSymbolicLinkObject")
 	procNtCreateDirectoryObject    = modntdll.NewProc("NtCreateDirectoryObject")
+	procNtQueryObject              = modntdll.NewProc("NtQueryObject")
 )
 
 // ObjectAttributes has been derived from the OBJECT_ATTRIBUTES struct definition.
@@ -113,5 +122,22 @@ func NtCreateDirectoryObject(
 	r0, _, _ := procNtCreateDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)),
 		uintptr(DesiredAccess),
 		uintptr(unsafe.Pointer(ObjectAttributes)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: ObjectInformation, ReturnLength.
+// *OPT-parameter: Handle, ReturnLength.
+func NtQueryObject(
+	Handle Handle,
+	ObjectInformationClass ObjectInformationClass,
+	ObjectInformation *byte,
+	ObjectInformationLength uint32,
+	ReturnLength *uint32,
+) NtStatus {
+	r0, _, _ := procNtQueryObject.Call(uintptr(Handle),
+		uintptr(ObjectInformationClass),
+		uintptr(unsafe.Pointer(ObjectInformation)),
+		uintptr(ObjectInformationLength),
+		uintptr(unsafe.Pointer(ReturnLength)))
 	return NtStatus(r0)
 }

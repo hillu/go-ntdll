@@ -67,6 +67,17 @@ NTSTATUS NtCreateDirectoryObject(
 */
 
 /*
+func:
+NTSTATUS NtQueryObject (
+    _In_opt_ HANDLE Handle,
+    _In_ OBJECT_INFORMATION_CLASS ObjectInformationClass,
+    _Out_ PVOID ObjectInformation, // _Out_writes_bytes_opt_(ObjectInformationLength)
+    _In_ ULONG ObjectInformationLength,
+    _Out_opt_ PULONG ReturnLength
+);
+*/
+
+/*
 type:
 typedef struct _OBJECT_ATTRIBUTES {
   ULONG           Length;
@@ -109,6 +120,14 @@ typedef struct _OBJECT_DIRECTORY_INFORMATION {
     UNICODE_STRING Name;
     UNICODE_STRING TypeName;
 } OBJECT_DIRECTORY_INFORMATION, *POBJECT_DIRECTORY_INFORMATION;
+*/
+
+/*
+enum:
+typedef enum _OBJECT_INFORMATION_CLASS {
+    ObjectBasicInformation = 0,
+    ObjectTypeInformation = 2
+} OBJECT_INFORMATION_CLASS;
 */
 
 // typedef DWORD ACCESS_MASK
