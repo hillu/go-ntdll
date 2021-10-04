@@ -51,3 +51,13 @@ func NewEmptyUnicodeString(length int) *UnicodeString {
 		Buffer:        &buf[0],
 	}
 }
+
+// NewUnicodeStringFromBuffer initializes a UnicodeString from a
+// pointer and a length value as returned by many NTDLL API calls.
+func NewUnicodeStringFromBuffer(buffer *uint16, length int) *UnicodeString {
+	return &UnicodeString{
+		Length:        uint16(length),
+		MaximumLength: uint16(length),
+		Buffer:        buffer,
+	}
+}
