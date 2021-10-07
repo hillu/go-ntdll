@@ -82,6 +82,22 @@ type SystemModuleInformationT struct {
 	Modules      [1]SystemModule
 }
 
+// SystemHandleTableEntryInfo has been derived from the SYSTEM_HANDLE_TABLE_ENTRY_INFO struct definition.
+type SystemHandleTableEntryInfo struct {
+	ProcessId        uint32
+	ObjectTypeNumber byte
+	Flags            byte
+	Handle           uint16
+	Object           *byte
+	GrantedAccess    byte
+}
+
+// SystemHandleInformationT has been derived from the SYSTEM_HANDLE_INFORMATION struct definition.
+type SystemHandleInformationT struct {
+	HandleCount uint32
+	Handles     [1]SystemHandleTableEntryInfo
+}
+
 // OUT-parameter: SystemInformation, ReturnLength.
 func NtQuerySystemInformation(
 	SystemInformationClass SystemInformationClass,
