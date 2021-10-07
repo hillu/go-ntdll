@@ -4,6 +4,26 @@ package ntdll
 //go:generate mkcode $GOFILE
 
 /*
+func:
+NTSTATUS NtQuerySecurityObject(
+  HANDLE  Handle,
+  SECURITY_INFORMATION  SecurityInformation,
+  PSECURITY_DESCRIPTOR  SecurityDescriptor,
+  ULONG  Length,
+  PULONG  LengthNeeded
+);
+*/
+
+/*
+func:
+NTSTATUS NtSetSecurityObject(
+  HANDLE Handle,
+  SECURITY_INFORMATION SecurityInformation,
+  PSECURITY_DESCRIPTOR SecurityDescriptor
+);
+*/
+
+/*
 type:
 typedef struct _ACL {
   BYTE AclRevision;
@@ -45,3 +65,5 @@ typedef struct _SECURITY_DESCRIPTOR {
   PACL  Dacl;
 } SECURITY_DESCRIPTOR, *PISECURITY_DESCRIPTOR;
 */
+
+type SecurityInformationT uint32
