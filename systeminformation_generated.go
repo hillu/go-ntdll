@@ -76,6 +76,243 @@ type SystemModule struct {
 	Name           [256]byte
 }
 
+// SystemBasicInformationT has been derived from the SYSTEM_BASIC_INFORMATION struct definition.
+type SystemBasicInformationT struct {
+	Reserved1             [4]byte
+	MaximumIncrement      uint32
+	PhysicalPageSize      uint32
+	NumberOfPhysicalPages uint32
+	LowestPhysicalPage    uint32
+	HighestPhysicalPage   uint32
+	AllocationGranularity uint32
+	LowestUserAddress     *uint32
+	HighestUserAddress    *uint32
+	ActiveProcessors      *uint32
+	NumberOfProcessors    byte
+}
+
+// SystemProcessorInformationT has been derived from the SYSTEM_PROCESSOR_INFORMATION struct definition.
+type SystemProcessorInformationT struct {
+	ProcessorArchitecture uint16
+	ProcessorLevel        uint16
+	ProcessorRevision     uint16
+	Unknown               uint16
+	FeatureBits           uint32
+}
+
+// SystemProcessorPerformanceInformationT has been derived from the SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION struct definition.
+type SystemProcessorPerformanceInformationT struct {
+	IdleTime   int64
+	KernelTime int64
+	UserTime   int64
+	Reserved1  [2]int64
+	Reserved2  uint32
+}
+
+// IoCounters has been derived from the IO_COUNTERS struct definition.
+type IoCounters struct {
+	ReadOperationCount  uint64
+	WriteOperationCount uint64
+	OtherOperationCount uint64
+	ReadTransferCount   uint64
+	WriteTransferCount  uint64
+	OtherTransferCount  uint64
+}
+
+// VmCounters has been derived from the VM_COUNTERS struct definition.
+type VmCounters struct {
+	PeakVirtualSize            uintptr
+	VirtualSize                uintptr
+	PageFaultCount             uint32
+	PeakWorkingSetSize         uintptr
+	WorkingSetSize             uintptr
+	QuotaPeakPagedPoolUsage    uintptr
+	QuotaPagedPoolUsage        uintptr
+	QuotaPeakNonPagedPoolUsage uintptr
+	QuotaNonPagedPoolUsage     uintptr
+	PagefileUsage              uintptr
+	PeakPagefileUsage          uintptr
+}
+
+// SystemProcessInformationT has been derived from the SYSTEM_PROCESS_INFORMATION struct definition.
+type SystemProcessInformationT struct {
+	NextEntryOffset              uint32
+	NumberOfThreads              uint32
+	Reserved                     [3]int64
+	CreateTime                   int64
+	UserTime                     int64
+	KernelTime                   int64
+	ImageName                    UnicodeString
+	BasePriority                 Kpriority
+	UniqueProcessId              Handle
+	InheritedFromUniqueProcessId Handle
+	HandleCount                  uint32
+	SessionId                    uint32
+	PageDirectoryBase            uint32
+	VirtualMemoryCounters        VmCounters
+	PrivatePageCount             uintptr
+	IoCounters                   IoCounters
+}
+
+// ClientId has been derived from the CLIENT_ID struct definition.
+type ClientId struct {
+	UniqueProcess Handle
+	UniqueThread  Handle
+}
+
+// SystemThreadInformationT has been derived from the SYSTEM_THREAD_INFORMATION struct definition.
+type SystemThreadInformationT struct {
+	Reserved1    [3]int64
+	Reserved2    uint32
+	StartAddress *byte
+	ClientId     ClientId
+	Priority     Kpriority
+	BasePriority int32
+	Reserved3    uint32
+	ThreadState  uint32
+	WaitReason   uint32
+}
+
+// SystemRegistryQuotaInformationT has been derived from the SYSTEM_REGISTRY_QUOTA_INFORMATION struct definition.
+type SystemRegistryQuotaInformationT struct {
+	RegistryQuotaAllowed uint32
+	RegistryQuotaUsed    uint32
+	Reserved1            *byte
+}
+
+// SystemTimeofdayInformationT has been derived from the SYSTEM_TIMEOFDAY_INFORMATION struct definition.
+type SystemTimeofdayInformationT struct {
+	BootTime          int64
+	CurrentTime       int64
+	TimeZoneBias      int64
+	CurrentTimeZoneId uint32
+	Reserved1         [20]byte
+}
+
+// SystemPerformanceInformationT has been derived from the SYSTEM_PERFORMANCE_INFORMATION struct definition.
+type SystemPerformanceInformationT struct {
+	IdleTime                               int64
+	ReadTransferCount                      int64
+	WriteTransferCount                     int64
+	OtherTransferCount                     int64
+	ReadOperationCount                     uint32
+	WriteOperationCount                    uint32
+	OtherOperationCount                    uint32
+	AvailablePages                         uint32
+	TotalCommittedPages                    uint32
+	TotalCommitLimit                       uint32
+	PeakCommitment                         uint32
+	PageFaults                             uint32
+	WriteCopyFaults                        uint32
+	TransitionFaults                       uint32
+	CacheTransitionFaults                  uint32
+	DemandZeroFaults                       uint32
+	PagesRead                              uint32
+	PageReadIos                            uint32
+	CacheReads                             uint32
+	CacheIos                               uint32
+	PagefilePagesWritten                   uint32
+	PagefilePageWriteIos                   uint32
+	MappedFilePagesWritten                 uint32
+	MappedFilePageWriteIos                 uint32
+	PagedPoolUsage                         uint32
+	NonPagedPoolUsage                      uint32
+	PagedPoolAllocs                        uint32
+	PagedPoolFrees                         uint32
+	NonPagedPoolAllocs                     uint32
+	NonPagedPoolFrees                      uint32
+	TotalFreeSystemPtes                    uint32
+	SystemCodePage                         uint32
+	TotalSystemDriverPages                 uint32
+	TotalSystemCodePages                   uint32
+	SmallNonPagedLookasideListAllocateHits uint32
+	SmallPagedLookasideListAllocateHits    uint32
+	Reserved3                              uint32
+	MmSystemCachePage                      uint32
+	PagedPoolPage                          uint32
+	SystemDriverPage                       uint32
+	FastReadNoWait                         uint32
+	FastReadWait                           uint32
+	FastReadResourceMiss                   uint32
+	FastReadNotPossible                    uint32
+	FastMdlReadNoWait                      uint32
+	FastMdlReadWait                        uint32
+	FastMdlReadResourceMiss                uint32
+	FastMdlReadNotPossible                 uint32
+	MapDataNoWait                          uint32
+	MapDataWait                            uint32
+	MapDataNoWaitMiss                      uint32
+	MapDataWaitMiss                        uint32
+	PinMappedDataCount                     uint32
+	PinReadNoWait                          uint32
+	PinReadWait                            uint32
+	PinReadNoWaitMiss                      uint32
+	PinReadWaitMiss                        uint32
+	CopyReadNoWait                         uint32
+	CopyReadWait                           uint32
+	CopyReadNoWaitMiss                     uint32
+	CopyReadWaitMiss                       uint32
+	MdlReadNoWait                          uint32
+	MdlReadWait                            uint32
+	MdlReadNoWaitMiss                      uint32
+	MdlReadWaitMiss                        uint32
+	ReadAheadIos                           uint32
+	LazyWriteIos                           uint32
+	LazyWritePages                         uint32
+	DataFlushes                            uint32
+	DataPages                              uint32
+	ContextSwitches                        uint32
+	FirstLevelTbFills                      uint32
+	SecondLevelTbFills                     uint32
+	SystemCalls                            uint32
+}
+
+// SystemExceptionInformationT has been derived from the SYSTEM_EXCEPTION_INFORMATION struct definition.
+type SystemExceptionInformationT struct {
+	Reserved1 [16]byte
+}
+
+// SystemLookasideInformationT has been derived from the SYSTEM_LOOKASIDE_INFORMATION struct definition.
+type SystemLookasideInformationT struct {
+	Reserved1 [32]byte
+}
+
+// SystemInterruptInformationT has been derived from the SYSTEM_INTERRUPT_INFORMATION struct definition.
+type SystemInterruptInformationT struct {
+	Reserved1 [24]byte
+}
+
+// SystemPolicyInformationT has been derived from the SYSTEM_POLICY_INFORMATION struct definition.
+type SystemPolicyInformationT struct {
+	Reserved1 [2]*byte
+	Reserved2 [3]uint32
+}
+
+// SystemHandleEntry has been derived from the SYSTEM_HANDLE_ENTRY struct definition.
+type SystemHandleEntry struct {
+	OwnerPid      uint32
+	ObjectType    byte
+	HandleFlags   byte
+	HandleValue   uint16
+	ObjectPointer *byte
+	AccessMask    uint32
+}
+
+// SystemHandleInformationT has been derived from the SYSTEM_HANDLE_INFORMATION struct definition.
+type SystemHandleInformationT struct {
+	Count  uint32
+	Handle [1]SystemHandleEntry
+}
+
+// SystemPagefileInformationT has been derived from the SYSTEM_PAGEFILE_INFORMATION struct definition.
+type SystemPagefileInformationT struct {
+	NextEntryOffset uint32
+	CurrentSize     uint32
+	TotalUsed       uint32
+	PeakUsed        uint32
+	FileName        UnicodeString
+}
+
 // SystemModuleInformationT has been derived from the SYSTEM_MODULE_INFORMATION struct definition.
 type SystemModuleInformationT struct {
 	ModulesCount uint32
