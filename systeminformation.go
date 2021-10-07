@@ -107,9 +107,36 @@ typedef struct _SYSTEM_MODULE_INFORMATION {
 } SYSTEM_MODULE_INFORMATION, *PSYSTEM_MODULE_INFORMATION;
 */
 
+/*
+type:
+typedef struct _SYSTEM_HANDLE_TABLE_ENTRY_INFO {
+  ULONG                ProcessId;
+  BYTE                 ObjectTypeNumber;
+  BYTE                 Flags;
+  USHORT               Handle;
+  PVOID                Object;
+  BYTE          GrantedAccess;
+} SYSTEM_HANDLE_TABLE_ENTRY_INFO, *PSYSTEM_HANDLE_TABLE_ENTRY_INFO;
+*/
+
+/*
+type:
+typedef struct _SYSTEM_HANDLE_INFORMATION {
+  ULONG                HandleCount;
+  SYSTEM_HANDLE_TABLE_ENTRY_INFO Handles [ANYSIZE_ARRAY];
+} SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
+*/
+
 func (mi *SystemModuleInformationT) GetModules() []SystemModule {
 	modules := make([]SystemModule, int(mi.ModulesCount))
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&modules))
 	hdr.Data = uintptr(unsafe.Pointer(&mi.Modules[0]))
 	return modules
+}
+
+func (mi *SystemHandleInformationT) GetHandles() []SystemHandleTableEntryInfo {
+	handles := make([]SystemHandleTableEntryInfo, int(mi.HandleCount))
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&handles))
+	hdr.Data = uintptr(unsafe.Pointer(&mi.Handles[0]))
+	return handles
 }
