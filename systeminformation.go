@@ -4,6 +4,7 @@
 // Information taken from
 // - http://www.ntinternals.net/: UserMode / NTDLL / System Information
 // - http://www.geoffchappell.com/studies/windows/km/index.htm
+// - MinGW headers
 
 package ntdll
 
