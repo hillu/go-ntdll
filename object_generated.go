@@ -21,6 +21,7 @@ var (
 	procNtCreateSymbolicLinkObject = modntdll.NewProc("NtCreateSymbolicLinkObject")
 	procNtCreateDirectoryObject    = modntdll.NewProc("NtCreateDirectoryObject")
 	procNtQueryObject              = modntdll.NewProc("NtQueryObject")
+	procNtDuplicateObject          = modntdll.NewProc("NtDuplicateObject")
 )
 
 // ObjectAttributes has been derived from the OBJECT_ATTRIBUTES struct definition.
@@ -139,5 +140,26 @@ func NtQueryObject(
 		uintptr(unsafe.Pointer(ObjectInformation)),
 		uintptr(ObjectInformationLength),
 		uintptr(unsafe.Pointer(ReturnLength)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: TargetHandle.
+// *OPT-parameter: TargetProcessHandle, TargetHandle.
+func NtDuplicateObject(
+	SourceProcessHandle Handle,
+	SourceHandle Handle,
+	TargetProcessHandle Handle,
+	TargetHandle *Handle,
+	DesiredAccess AccessMask,
+	HandleAttributes uint32,
+	Options uint32,
+) NtStatus {
+	r0, _, _ := procNtDuplicateObject.Call(uintptr(SourceProcessHandle),
+		uintptr(SourceHandle),
+		uintptr(TargetProcessHandle),
+		uintptr(unsafe.Pointer(TargetHandle)),
+		uintptr(DesiredAccess),
+		uintptr(HandleAttributes),
+		uintptr(Options))
 	return NtStatus(r0)
 }
