@@ -26,7 +26,7 @@ func main() {
 	mi := (*ntdll.SystemModuleInformationT)(unsafe.Pointer(&buf[0]))
 	fmt.Println("idx map_base img_base         img_size flags    load init cnt  name")
 	fmt.Println("--- -------- ---------------- -------- -------- ---- ---- ---- ----")
-	for i, module := range mi.GetModules() {
+	for i, module := range mi.GetEntries() {
 		nlen := bytes.Index(module.Name[:], []byte{0})
 		name := string(module.Name[:nlen])
 		fmt.Printf("%3d %08x %016x %08x %08x %04x %04x %04x %s\n", i,

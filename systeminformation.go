@@ -364,6 +364,13 @@ typedef struct _SYSTEM_HANDLE_INFORMATION {
 } SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
 */
 
+func (mi *SystemHandleInformationT) GetEntries() []SystemHandleEntry {
+	handles := make([]SystemHandleEntry, int(mi.Count))
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&handles))
+	hdr.Data = uintptr(unsafe.Pointer(&mi.Handle[0]))
+	return handles
+}
+
 /*
 type:
 typedef struct _SYSTEM_PAGEFILE_INFORMATION {
@@ -383,7 +390,7 @@ typedef struct _SYSTEM_MODULE_INFORMATION {
 } SYSTEM_MODULE_INFORMATION, *PSYSTEM_MODULE_INFORMATION;
 */
 
-func (mi *SystemModuleInformationT) GetModules() []SystemModule {
+func (mi *SystemModuleInformationT) GetEntries() []SystemModule {
 	modules := make([]SystemModule, int(mi.ModulesCount))
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&modules))
 	hdr.Data = uintptr(unsafe.Pointer(&mi.Modules[0]))
