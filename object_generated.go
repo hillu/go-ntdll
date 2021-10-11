@@ -10,7 +10,10 @@ type ObjectInformationClass uint32
 
 const (
 	ObjectBasicInformation ObjectInformationClass = 0
+	ObjectNameInformation                         = 1
 	ObjectTypeInformation                         = 2
+	ObjectAllInformation                          = 3
+	ObjectDataInformation                         = 4
 )
 
 var (
@@ -38,6 +41,73 @@ type ObjectAttributes struct {
 type ObjectDirectoryInformationT struct {
 	Name     UnicodeString
 	TypeName UnicodeString
+}
+
+// ObjectBasicInformationT has been derived from the OBJECT_BASIC_INFORMATION struct definition.
+type ObjectBasicInformationT struct {
+	Attributes               uint32
+	GrantedAccess            AccessMask
+	HandleCount              uint32
+	PointerCount             uint32
+	PagedPoolUsage           uint32
+	NonPagedPoolUsage        uint32
+	Reserved                 [3]uint32
+	NameInformationLength    uint32
+	TypeInformationLength    uint32
+	SecurityDescriptorLength uint32
+	CreateTime               int64
+}
+
+// ObjectNameInformationT has been derived from the OBJECT_NAME_INFORMATION struct definition.
+type ObjectNameInformationT struct {
+	Name UnicodeString
+}
+
+// GenericMapping has been derived from the GENERIC_MAPPING struct definition.
+type GenericMapping struct {
+	GenericRead    AccessMask
+	GenericWrite   AccessMask
+	GenericExecute AccessMask
+	GenericAll     AccessMask
+}
+
+// ObjectTypeInformationT has been derived from the OBJECT_TYPE_INFORMATION struct definition.
+type ObjectTypeInformationT struct {
+	TypeName                   UnicodeString
+	TotalNumberOfObjects       uint32
+	TotalNumberOfHandles       uint32
+	TotalPagedPoolUsage        uint32
+	TotalNonPagedPoolUsage     uint32
+	TotalNamePoolUsage         uint32
+	TotalHandleTableUsage      uint32
+	HighWaterNumberOfObjects   uint32
+	HighWaterNumberOfHandles   uint32
+	HighWaterPagedPoolUsage    uint32
+	HighWaterNonPagedPoolUsage uint32
+	HighWaterNamePoolUsage     uint32
+	HighWaterHandleTableUsage  uint32
+	InvalidAttributes          uint32
+	GenericMapping             GenericMapping
+	ValidAccessMask            uint32
+	SecurityRequired           bool
+	MaintainHandleCount        bool
+	TypeIndex                  byte
+	ReservedByte               byte
+	PoolType                   uint32
+	DefaultPagedPoolCharge     uint32
+	DefaultNonPagedPoolCharge  uint32
+}
+
+// ObjectAllInformationT has been derived from the OBJECT_ALL_INFORMATION struct definition.
+type ObjectAllInformationT struct {
+	NumberOfObjects       uint32
+	ObjectTypeInformation [1]ObjectTypeInformationT
+}
+
+// ObjectDataInformationT has been derived from the OBJECT_DATA_INFORMATION struct definition.
+type ObjectDataInformationT struct {
+	InheritHandle    bool
+	ProtectFromClose bool
 }
 
 // OUT-parameter: DirectoryHandle.
