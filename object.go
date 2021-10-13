@@ -217,7 +217,7 @@ typedef struct _OBJECT_ALL_INFORMATION {
 } OBJECT_ALL_INFORMATION, *POBJECT_ALL_INFORMATION;
 */
 
-func (oi *ObjectAllInformationT) GetEntries() []*ObjectTypeInformationT {
+func (oi *ObjectAllInformationT) GetObjectTypeInformation() []*ObjectTypeInformationT {
 	types := make([]*ObjectTypeInformationT, 0, int(oi.NumberOfObjects))
 	offset := uintptr(unsafe.Pointer(&oi.ObjectTypeInformation[0]))
 	for i := uintptr(0); i < uintptr(oi.NumberOfObjects); i++ {

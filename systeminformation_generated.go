@@ -300,8 +300,8 @@ type SystemHandleEntry struct {
 
 // SystemHandleInformationT has been derived from the SYSTEM_HANDLE_INFORMATION struct definition.
 type SystemHandleInformationT struct {
-	Count  uint32
-	Handle [1]SystemHandleEntry
+	Count   uint32
+	Handles [1]SystemHandleEntry
 }
 
 // SystemPagefileInformationT has been derived from the SYSTEM_PAGEFILE_INFORMATION struct definition.
