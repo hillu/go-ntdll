@@ -37,3 +37,31 @@ func NtSetSecurityObject(
 		uintptr(unsafe.Pointer(SecurityDescriptor)))
 	return NtStatus(r0)
 }
+
+// unknown-parameter: Handle, SecurityInformation, SecurityDescriptor, Length, LengthNeeded.
+func NtQuerySecurityObject(
+	Handle Handle,
+	SecurityInformation SecurityInformationT,
+	SecurityDescriptor *SecurityDescriptor,
+	Length uint32,
+	LengthNeeded *uint32,
+) NtStatus {
+	r0, _, _ := procNtQuerySecurityObject.Call(uintptr(Handle),
+		uintptr(SecurityInformation),
+		uintptr(unsafe.Pointer(SecurityDescriptor)),
+		uintptr(Length),
+		uintptr(unsafe.Pointer(LengthNeeded)))
+	return NtStatus(r0)
+}
+
+// unknown-parameter: Handle, SecurityInformation, SecurityDescriptor.
+func NtSetSecurityObject(
+	Handle Handle,
+	SecurityInformation SecurityInformationT,
+	SecurityDescriptor *SecurityDescriptor,
+) NtStatus {
+	r0, _, _ := procNtSetSecurityObject.Call(uintptr(Handle),
+		uintptr(SecurityInformation),
+		uintptr(unsafe.Pointer(SecurityDescriptor)))
+	return NtStatus(r0)
+}

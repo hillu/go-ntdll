@@ -123,7 +123,9 @@ func translate(from string) (to string) {
 		}
 		// This avoids collisions between constants and type definitions, e.g.
 		// KeyBasicInformation (constant) vs. KEY_BASIC_INFORMATION (struct)
-		if strings.HasSuffix(from, "_INFORMATION") {
+		if strings.HasSuffix(from, "_INFORMATION") ||
+			strings.HasSuffix(from, "_TYPE") ||
+			strings.HasPrefix(from, "TOKEN_") {
 			to += "T"
 		}
 	} else {

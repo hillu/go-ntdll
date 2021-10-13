@@ -30,17 +30,17 @@ if st := CallWithExpandingBuffer(func() NtStatus {
 */
 func CallWithExpandingBuffer(fn func() NtStatus, buf *[]byte, resultLength *uint32) NtStatus {
 	for {
-		if st := fn(); st == STATUS_BUFFER_OVERFLOW || st == STATUS_BUFFER_TOO_SMALL || st == STATUS_INFO_LENGTH_MISMATCH {
-			if int(*resultLength) <= cap(*buf) {
-				(*reflect.SliceHeader)(unsafe.Pointer(buf)).Len = int(*resultLength)
-			} else {
-				*buf = make([]byte, int(*resultLength))
-			}
+		st := fn()
+		if int(*resultLength) <= cap(*buf) {
+			(*reflect.SliceHeader)(unsafe.Pointer(buf)).Len = int(*resultLength)
+		} else {
+			orig := buf
+			*buf = make([]byte, int(*resultLength))
+			copy(*buf, *orig)
+		}
+		if st == STATUS_BUFFER_OVERFLOW || st == STATUS_BUFFER_TOO_SMALL || st == STATUS_INFO_LENGTH_MISMATCH {
 			continue
 		} else {
-			if !st.IsError() {
-				*buf = (*buf)[:int(*resultLength)]
-			}
 			return st
 		}
 	}

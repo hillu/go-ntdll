@@ -10,13 +10,22 @@ import (
 /*
 func:
 NTSTATUS NtQuerySecurityObject(
-	HANDLE 				 Handle,
-	SECURITY_INFORMATION SecurityInformation,
-	PSECURITY_DESCRIPTOR SecurityDescriptor,
-	ULONG				 Length,
-	PULONG				 LengthNeeded
+  HANDLE  Handle,
+  SECURITY_INFORMATION  SecurityInformation,
+  PSECURITY_DESCRIPTOR  SecurityDescriptor,
+  ULONG  Length,
+  PULONG  LengthNeeded
 );
- */
+*/
+
+/*
+func:
+NTSTATUS NtSetSecurityObject(
+  HANDLE Handle,
+  SECURITY_INFORMATION SecurityInformation,
+  PSECURITY_DESCRIPTOR SecurityDescriptor
+);
+*/
 
 /*
 func:
@@ -30,4 +39,3 @@ NTSTATUS NtSetSecurityObject(
 type SecurityInformationT windows.SECURITY_INFORMATION
 
 type SecurityDescriptor windows.SECURITY_DESCRIPTOR
-

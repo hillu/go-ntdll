@@ -67,6 +67,30 @@ NTSTATUS NtCreateDirectoryObject(
 */
 
 /*
+func:
+NTSTATUS NtQueryObject (
+    _In_opt_ HANDLE Handle,
+    _In_ OBJECT_INFORMATION_CLASS ObjectInformationClass,
+    _Out_ PVOID ObjectInformation, // _Out_writes_bytes_opt_(ObjectInformationLength)
+    _In_ ULONG ObjectInformationLength,
+    _Out_opt_ PULONG ReturnLength
+);
+*/
+
+/*
+func:
+NTSTATUS NtDuplicateObject (
+  _In_ HANDLE SourceProcessHandle,
+  _In_ HANDLE SourceHandle,
+  _In_opt_ HANDLE TargetProcessHandle,
+  _Out_opt_ PHANDLE TargetHandle,
+  _In_ ACCESS_MASK DesiredAccess,
+  _In_ ULONG HandleAttributes,
+  _In_ ULONG Options
+);
+*/
+
+/*
 type:
 typedef struct _OBJECT_ATTRIBUTES {
   ULONG           Length;
@@ -109,6 +133,109 @@ typedef struct _OBJECT_DIRECTORY_INFORMATION {
     UNICODE_STRING Name;
     UNICODE_STRING TypeName;
 } OBJECT_DIRECTORY_INFORMATION, *POBJECT_DIRECTORY_INFORMATION;
+*/
+
+/*
+enum:
+typedef enum _OBJECT_INFORMATION_CLASS {
+    ObjectBasicInformation,
+    ObjectNameInformation,
+    ObjectTypeInformation,
+    ObjectAllInformation,
+    ObjectDataInformation
+} OBJECT_INFORMATION_CLASS;
+*/
+
+/*
+type:
+typedef struct _OBJECT_BASIC_INFORMATION {
+  ULONG  Attributes;
+  ACCESS_MASK  GrantedAccess;
+  ULONG  HandleCount;
+  ULONG  PointerCount;
+  ULONG  PagedPoolUsage;
+  ULONG  NonPagedPoolUsage;
+  ULONG  Reserved[3];
+  ULONG  NameInformationLength;
+  ULONG  TypeInformationLength;
+  ULONG  SecurityDescriptorLength;
+  LARGE_INTEGER  CreateTime;
+} OBJECT_BASIC_INFORMATION, *POBJECT_BASIC_INFORMATION;
+*/
+
+/*
+type:
+typedef struct _OBJECT_NAME_INFORMATION {
+  UNICODE_STRING Name;
+} OBJECT_NAME_INFORMATION, *POBJECT_NAME_INFORMATION;
+*/
+
+/*
+type:
+typedef struct _GENERIC_MAPPING {
+  ACCESS_MASK GenericRead;
+  ACCESS_MASK GenericWrite;
+  ACCESS_MASK GenericExecute;
+  ACCESS_MASK GenericAll;
+} GENERIC_MAPPING;
+*/
+
+/*
+type:
+typedef struct _OBJECT_TYPE_INFORMATION {
+  UNICODE_STRING TypeName;
+  ULONG TotalNumberOfObjects;
+  ULONG TotalNumberOfHandles;
+  ULONG TotalPagedPoolUsage;
+  ULONG TotalNonPagedPoolUsage;
+  ULONG TotalNamePoolUsage;
+  ULONG TotalHandleTableUsage;
+  ULONG HighWaterNumberOfObjects;
+  ULONG HighWaterNumberOfHandles;
+  ULONG HighWaterPagedPoolUsage;
+  ULONG HighWaterNonPagedPoolUsage;
+  ULONG HighWaterNamePoolUsage;
+  ULONG HighWaterHandleTableUsage;
+  ULONG InvalidAttributes;
+  GENERIC_MAPPING GenericMapping;
+  ULONG ValidAccessMask;
+  BOOLEAN SecurityRequired;
+  BOOLEAN MaintainHandleCount;
+  UCHAR TypeIndex;
+  CHAR ReservedByte;
+  ULONG PoolType;
+  ULONG DefaultPagedPoolCharge;
+  ULONG DefaultNonPagedPoolCharge;
+} OBJECT_TYPE_INFORMATION, *POBJECT_TYPE_INFORMATION;
+*/
+
+/*
+type:
+typedef struct _OBJECT_ALL_INFORMATION {
+  ULONG NumberOfObjects;
+  OBJECT_TYPE_INFORMATION ObjectTypeInformation[1];
+} OBJECT_ALL_INFORMATION, *POBJECT_ALL_INFORMATION;
+*/
+
+func (oi *ObjectAllInformationT) GetObjectTypeInformation() []*ObjectTypeInformationT {
+	types := make([]*ObjectTypeInformationT, 0, int(oi.NumberOfObjects))
+	offset := uintptr(unsafe.Pointer(&oi.ObjectTypeInformation[0]))
+	for i := uintptr(0); i < uintptr(oi.NumberOfObjects); i++ {
+		current := (*ObjectTypeInformationT)(unsafe.Pointer(offset))
+		types = append(types, current)
+		offset += unsafe.Sizeof(ObjectTypeInformationT{}) + uintptr(current.TypeName.MaximumLength)
+		// padding
+		offset = (offset & unsafe.Sizeof(uintptr(0))) + unsafe.Sizeof(uintptr(0))
+	}
+	return types
+}
+
+/*
+type:
+typedef struct _OBJECT_DATA_INFORMATION {
+  BOOLEAN InheritHandle;
+  BOOLEAN ProtectFromClose;
+} OBJECT_DATA_INFORMATION, *POBJECT_DATA_INFORMATION;
 */
 
 // typedef DWORD ACCESS_MASK
