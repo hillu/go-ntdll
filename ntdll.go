@@ -1,12 +1,10 @@
 package ntdll
 
-import (
-	"golang.org/x/sys/windows"
-)
+import "syscall"
 
-var modntdll = windows.NewLazyDLL("ntdll")
+var modntdll = syscall.NewLazyDLL("ntdll")
 
-type Handle windows.Handle
+type Handle syscall.Handle
 
 func fromBool(b bool) (r uintptr) {
 	if b {
