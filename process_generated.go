@@ -60,7 +60,6 @@ const (
 	ProcessTokenVirtualizationEnabled                  = 48
 	ProcessConsoleHostProcess                          = 49
 	ProcessWindowInformation                           = 50
-	MaxProcessInfoClass                                = 51
 )
 
 // The Threadinfoclass constants have been derived from the THREADINFOCLASS enum definition.
@@ -106,6 +105,8 @@ const (
 
 var (
 	procNtQueryInformationProcess = modntdll.NewProc("NtQueryInformationProcess")
+	procNtOpenProcess             = modntdll.NewProc("NtOpenProcess")
+	procNtOpenThread              = modntdll.NewProc("NtOpenThread")
 	procNtQueryInformationThread  = modntdll.NewProc("NtQueryInformationThread")
 	procNtSetInformationThread    = modntdll.NewProc("NtSetInformationThread")
 	procNtSetInformationProcess   = modntdll.NewProc("NtSetInformationProcess")
@@ -124,6 +125,36 @@ func NtQueryInformationProcess(
 		uintptr(unsafe.Pointer(ProcessInformation)),
 		uintptr(ProcessInformationLength),
 		uintptr(unsafe.Pointer(ReturnLength)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: ProcessHandle.
+// *OPT-parameter: ClientId.
+func NtOpenProcess(
+	ProcessHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	ClientId *ClientId,
+) NtStatus {
+	r0, _, _ := procNtOpenProcess.Call(uintptr(unsafe.Pointer(ProcessHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(ClientId)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: ThreadHandle.
+// *OPT-parameter: ClientId.
+func NtOpenThread(
+	ThreadHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	ClientId *ClientId,
+) NtStatus {
+	r0, _, _ := procNtOpenThread.Call(uintptr(unsafe.Pointer(ThreadHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(ClientId)))
 	return NtStatus(r0)
 }
 
