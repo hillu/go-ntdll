@@ -15,7 +15,7 @@ import (
 //
 // Example:
 /*
-buf := make([]byte, 128)
+var buf []byte
 var rlen uint32
 if st := CallWithExpandingBuffer(func() NtStatus {
     return NtQueryKey(
@@ -29,6 +29,9 @@ if st := CallWithExpandingBuffer(func() NtStatus {
 }
 */
 func CallWithExpandingBuffer(fn func() NtStatus, buf *[]byte, resultLength *uint32) NtStatus {
+	if len(*buf) == 0 {
+		*buf = make([]byte, 32, 32)
+	}
 	for {
 		st := fn()
 		if int(*resultLength) <= cap(*buf) {
