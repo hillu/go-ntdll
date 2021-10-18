@@ -117,10 +117,14 @@ const (
 // FIXME: PVOID -> *byte or PVOID -> uintptr?a
 
 func NewObjectAttributes(objectName string, attr uint32, rootdir Handle, sd *byte) (oa *ObjectAttributes) {
+	var s *UnicodeString
+	if objectName != "" {
+		s = NewUnicodeString(objectName)
+	}
 	oa = &ObjectAttributes{
 		Length:             uint32(unsafe.Sizeof(*oa)),
 		RootDirectory:      rootdir,
-		ObjectName:         NewUnicodeString(objectName),
+		ObjectName:         s,
 		Attributes:         attr,
 		SecurityDescriptor: sd,
 	}
