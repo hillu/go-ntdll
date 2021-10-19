@@ -112,6 +112,16 @@ var (
 	procNtSetInformationProcess   = modntdll.NewProc("NtSetInformationProcess")
 )
 
+// ProcessBasicInformationT has been derived from the PROCESS_BASIC_INFORMATION struct definition.
+type ProcessBasicInformationT struct {
+	ExitStatus                   NtStatus
+	PebBaseAddress               **Eb
+	AffinityMask                 *uint32
+	BasePriority                 Kpriority
+	UniqueProcessId              Handle
+	InheritedFromUniqueProcessId Handle
+}
+
 // unknown-parameter: ProcessHandle, ProcessInformationClass, ProcessInformation, ProcessInformationLength, ReturnLength.
 func NtQueryInformationProcess(
 	ProcessHandle Handle,

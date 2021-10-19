@@ -92,6 +92,19 @@ typedef enum _PROCESS_INFORMATION_CLASS {
 */
 
 /*
+type:
+typedef struct _PROCESS_BASIC_INFORMATION
+{
+    NTSTATUS ExitStatus;
+    PPEB PebBaseAddress;
+    ULONG_PTR AffinityMask;
+    KPRIORITY BasePriority;
+    HANDLE UniqueProcessId;
+    HANDLE InheritedFromUniqueProcessId;
+} PROCESS_BASIC_INFORMATION, *PPROCESS_BASIC_INFORMATION;
+*/
+
+/*
 func:
 NTSTATUS NtQueryInformationThread(
   HANDLE          ThreadHandle,
