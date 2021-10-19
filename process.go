@@ -7,7 +7,7 @@ package ntdll
 func:
 NTSTATUS NtQueryInformationProcess(
   HANDLE           ProcessHandle,
-  PROCESSINFOCLASS ProcessInformationClass,
+  PROCESS_INFORMATION_CLASS ProcessInformationClass,
   PVOID            ProcessInformation,
   ULONG            ProcessInformationLength,
   PULONG           ReturnLength
@@ -36,7 +36,7 @@ NTSTATUS NtOpenThread(
 
 /*
 enum:
-typedef enum _PROCESSINFOCLASS {
+typedef enum _PROCESS_INFORMATION_CLASS {
   ProcessBasicInformation,
   ProcessQuotaLimits,
   ProcessIoCounters,
@@ -88,14 +88,14 @@ typedef enum _PROCESSINFOCLASS {
   ProcessTokenVirtualizationEnabled,
   ProcessConsoleHostProcess,
   ProcessWindowInformation,
-} PROCESSINFOCLASS;
+} PROCESS_INFORMATION_CLASS;
 */
 
 /*
 func:
 NTSTATUS NtQueryInformationThread(
   HANDLE          ThreadHandle,
-  THREADINFOCLASS ThreadInformationClass,
+  THREAD_INFORMATION_CLASS ThreadInformationClass,
   PVOID           ThreadInformation,
   ULONG           ThreadInformationLength,
   PULONG          ReturnLength
@@ -106,7 +106,7 @@ NTSTATUS NtQueryInformationThread(
 func:
 NTSTATUS NtSetInformationThread(
   HANDLE          ThreadHandle,
-  THREADINFOCLASS ThreadInformationClass,
+  THREAD_INFORMATION_CLASS ThreadInformationClass,
   PVOID           ThreadInformation,
   ULONG           ThreadInformationLength
 );
@@ -116,7 +116,7 @@ NTSTATUS NtSetInformationThread(
 func:
 NTSTATUS NtSetInformationProcess (
   HANDLE           ProcessHandle,
-  PROCESSINFOCLASS ProcessInformationClass,
+  PROCESS_INFORMATION_CLASS ProcessInformationClass,
   PVOID            ProcessInformation,
   ULONG            ProcessInformationLength
 );
@@ -124,7 +124,7 @@ NTSTATUS NtSetInformationProcess (
 
 /*
 enum:
-typedef enum _THREADINFOCLASS {
+typedef enum _THREAD_INFORMATION_CLASS {
   ThreadBasicInformation,
   ThreadTimes,
   ThreadPriority,
@@ -160,7 +160,7 @@ typedef enum _THREADINFOCLASS {
   ThreadCounterProfiling,
   ThreadIdealProcessorEx,
   MaxThreadInfoClass
-} THREADINFOCLASS;
+} THREAD_INFORMATION_CLASS;
 */
 
 const (
