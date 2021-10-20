@@ -10,3 +10,9 @@ type Guid struct {
 	Data3 uint16
 	Data4 [8]byte
 }
+
+// ListEntry has been derived from the LIST_ENTRY struct definition.
+type ListEntry struct {
+	Flink *ListEntry
+	Blink *ListEntry
+}

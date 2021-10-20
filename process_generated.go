@@ -112,10 +112,48 @@ var (
 	procNtSetInformationProcess   = modntdll.NewProc("NtSetInformationProcess")
 )
 
+// Peb has been derived from the PEB struct definition.
+type Peb struct {
+	Reserved1              [2]byte
+	BeingDebugged          byte
+	Reserved2              [1]byte
+	Reserved3              [2]*byte
+	Ldr                    *PebLdrData
+	ProcessParameters      *RtlUserProcessParameters
+	Reserved4              [3]*byte
+	AtlThunkSListPtr       *byte
+	Reserved5              *byte
+	Reserved6              uint32
+	Reserved7              *byte
+	Reserved8              uint32
+	AtlThunkSListPtr32     uint32
+	Reserved9              [45]*byte
+	Reserved10             [96]byte
+	PostProcessInitRoutine *PsPostProcessInitRoutine
+	Reserved11             [128]byte
+	Reserved12             [1]*byte
+	SessionId              uint32
+}
+
+// PebLdrData has been derived from the PEB_LDR_DATA struct definition.
+type PebLdrData struct {
+	Reserved1               [8]byte
+	Reserved2               [3]*byte
+	InMemoryOrderModuleList ListEntry
+}
+
+// RtlUserProcessParameters has been derived from the RTL_USER_PROCESS_PARAMETERS struct definition.
+type RtlUserProcessParameters struct {
+	Reserved1     [16]byte
+	Reserved2     [10]*byte
+	ImagePathName UnicodeString
+	CommandLine   UnicodeString
+}
+
 // ProcessBasicInformationT has been derived from the PROCESS_BASIC_INFORMATION struct definition.
 type ProcessBasicInformationT struct {
 	ExitStatus                   NtStatus
-	PebBaseAddress               **Eb
+	PebBaseAddress               *Peb
 	AffinityMask                 *uint32
 	BasePriority                 Kpriority
 	UniqueProcessId              Handle
