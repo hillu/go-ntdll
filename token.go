@@ -190,6 +190,15 @@ func (tp *TokenPrivilegesT) GetPrivileges() []LuidAndAttributes {
 	return privileges
 }
 
+func (tp *TokenPrivilegesT) SetPrivileges(ps []LuidAndAttributes) {
+	tp.PrivilegeCount = uint32(len(ps))
+	privileges := make([]LuidAndAttributes, len(ps))
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&privileges))
+	hdr.Data = uintptr(unsafe.Pointer(&tp.Privileges[0]))
+	copy(privileges, ps)
+	return
+}
+
 /*
 type:
 typedef struct _TOKEN_OWNER {
@@ -448,3 +457,22 @@ typedef enum _SECURITY_IMPERSONATION_LEVEL {
   SecurityDelegation
 } SECURITY_IMPERSONATION_LEVEL, * PSECURITY_IMPERSONATION_LEVEL;
 */
+
+const (
+	TOKEN_ASSIGN_PRIMARY    = 0x0001
+	TOKEN_DUPLICATE         = 0x0002
+	TOKEN_IMPERSONATE       = 0x0004
+	TOKEN_QUERY             = 0x0008
+	TOKEN_QUERY_SOURCE      = 0x0010
+	TOKEN_ADJUST_PRIVILEGES = 0x0020
+	TOKEN_ADJUST_GROUPS     = 0x0040
+	TOKEN_ADJUST_DEFAULT    = 0x0080
+	TOKEN_ADJUST_SESSIONID  = 0x0100
+)
+
+const (
+	SE_PRIVILEGE_ENABLED_BY_DEFAULT = 0x00000001
+	SE_PRIVILEGE_ENABLED            = 0x00000002
+	SE_PRIVILEGE_REMOVED            = 0x00000004
+	SE_PRIVILEGE_USED_FOR_ACCESS    = 0x80000000
+)
