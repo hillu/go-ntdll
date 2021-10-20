@@ -229,7 +229,9 @@ func (oi *ObjectAllInformationT) GetObjectTypeInformation() []*ObjectTypeInforma
 		types = append(types, current)
 		offset += unsafe.Sizeof(ObjectTypeInformationT{}) + uintptr(current.TypeName.MaximumLength)
 		// padding
-		offset = (offset & unsafe.Sizeof(uintptr(0))) + unsafe.Sizeof(uintptr(0))
+		if rest := offset % unsafe.Sizeof(uintptr(0)); rest != 0 {
+			offset += unsafe.Sizeof(uintptr(0)) - rest
+		}
 	}
 	return types
 }
