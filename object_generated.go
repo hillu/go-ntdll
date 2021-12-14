@@ -25,6 +25,7 @@ var (
 	procNtCreateDirectoryObject    = modntdll.NewProc("NtCreateDirectoryObject")
 	procNtQueryObject              = modntdll.NewProc("NtQueryObject")
 	procNtDuplicateObject          = modntdll.NewProc("NtDuplicateObject")
+	procNtCreateSection            = modntdll.NewProc("NtCreateSection")
 )
 
 // ObjectAttributes has been derived from the OBJECT_ATTRIBUTES struct definition.
@@ -231,5 +232,26 @@ func NtDuplicateObject(
 		uintptr(DesiredAccess),
 		uintptr(HandleAttributes),
 		uintptr(Options))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: SectionHandle.
+// *OPT-parameter: ObjectAttributes, MaximumSize, FileHandle.
+func NtCreateSection(
+	SectionHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	MaximumSize *int64,
+	SectionPageProtection uint32,
+	AllocationAttributes uint32,
+	FileHandle Handle,
+) NtStatus {
+	r0, _, _ := procNtCreateSection.Call(uintptr(unsafe.Pointer(SectionHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(unsafe.Pointer(MaximumSize)),
+		uintptr(SectionPageProtection),
+		uintptr(AllocationAttributes),
+		uintptr(FileHandle))
 	return NtStatus(r0)
 }

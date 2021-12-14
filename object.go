@@ -91,6 +91,19 @@ NTSTATUS NtDuplicateObject (
 */
 
 /*
+func:
+NTSTATUS NtCreateSection (
+  _Out_ PHANDLE SectionHandle,
+  _In_ ACCESS_MASK DesiredAccess,
+  _In_opt_ POBJECT_ATTRIBUTES ObjectAttributes,
+  _In_opt_ PLARGE_INTEGER MaximumSize,
+  _In_ ULONG SectionPageProtection,
+  _In_ ULONG AllocationAttributes,
+  _In_opt_ HANDLE FileHandle
+);
+*/
+
+/*
 type:
 typedef struct _OBJECT_ATTRIBUTES {
   ULONG           Length;
@@ -287,4 +300,11 @@ const (
 	KEY_WRITE      = ((STANDARD_RIGHTS_WRITE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY) &^ SYNCHRONIZE)
 	KEY_EXECUTE    = ((KEY_READ) &^ SYNCHRONIZE)
 	KEY_ALL_ACCESS = ((STANDARD_RIGHTS_ALL | KEY_QUERY_VALUE | KEY_SET_VALUE | KEY_CREATE_SUB_KEY | KEY_ENUMERATE_SUB_KEYS | KEY_NOTIFY | KEY_CREATE_LINK) &^ SYNCHRONIZE)
+
+	SECTION_QUERY       = 0x000001
+	SECTION_MAP_WRITE   = 0x000002
+	SECTION_MAP_READ    = 0x000004
+	SECTION_MAP_EXECUTE = 0x000008
+	SECTION_EXTEND_SIZE = 0x000010
+	SECTION_ALL_ACCESS  = 0x0F001F
 )
