@@ -238,7 +238,7 @@ func NtDuplicateObject(
 // OUT-parameter: SectionHandle.
 // *OPT-parameter: ObjectAttributes, MaximumSize, FileHandle.
 func NtCreateSection(
-	SectionHandle Handle,
+	SectionHandle *Handle,
 	DesiredAccess AccessMask,
 	ObjectAttributes *ObjectAttributes,
 	MaximumSize *int64,
@@ -246,7 +246,7 @@ func NtCreateSection(
 	AllocationAttributes uint32,
 	FileHandle Handle,
 ) NtStatus {
-	r0, _, _ := procNtCreateSection.Call(uintptr(SectionHandle),
+	r0, _, _ := procNtCreateSection.Call(uintptr(unsafe.Pointer(SectionHandle)),
 		uintptr(DesiredAccess),
 		uintptr(unsafe.Pointer(ObjectAttributes)),
 		uintptr(unsafe.Pointer(MaximumSize)),
