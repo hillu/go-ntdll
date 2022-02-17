@@ -253,6 +253,6 @@ const (
 )
 
 const (
-	NtCurrentProcess = Handle(0xffffffffffffffff)
-	NtCurrentThread  = Handle(0xfffffffffffffffe)
+	NtCurrentProcess = Handle(^uintptr(0))
+	NtCurrentThread  = Handle(^uintptr(0) - 1)
 )
