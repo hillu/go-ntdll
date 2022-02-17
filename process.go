@@ -251,8 +251,3 @@ const (
 	THREAD_SET_LIMITED_INFORMATION   = 0x0400
 	THREAD_QUERY_LIMITED_INFORMATION = 0x0800
 )
-
-const (
-	NtCurrentProcess = Handle(0xffffffffffffffff)
-	NtCurrentThread  = Handle(0xfffffffffffffffe)
-)
