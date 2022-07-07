@@ -98,3 +98,45 @@ typedef enum _MEMORY_INFORMATION_CLASS
     MemoryPhysicalContiguityInformation,
 } MEMORY_INFORMATION_CLASS;
 */
+
+/*
+type:
+typedef struct _MEMORY_BASIC_INFORMATION {
+  PVOID  BaseAddress;
+  PVOID  AllocationBase;
+  ULONG  AllocationProtect;
+  USHORT PartitionId;
+  SIZE_T RegionSize;
+  ULONG  State;
+  ULONG  Protect;
+  ULONG  Type;
+} MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
+*/
+
+/*
+type:
+typedef struct _MEMORY_BASIC_INFORMATION32 {
+    DWORD BaseAddress;
+    DWORD AllocationBase;
+    DWORD AllocationProtect;
+    DWORD RegionSize;
+    DWORD State;
+    DWORD Protect;
+    DWORD Type;
+} MEMORY_BASIC_INFORMATION32, *PMEMORY_BASIC_INFORMATION32;
+*/
+
+/*
+type:
+typedef struct _MEMORY_BASIC_INFORMATION64 {
+    ULONGLONG BaseAddress;
+    ULONGLONG AllocationBase;
+    DWORD     AllocationProtect;
+    DWORD     __alignment1;
+    ULONGLONG RegionSize;
+    DWORD     State;
+    DWORD     Protect;
+    DWORD     Type;
+    DWORD     __alignment2;
+} MEMORY_BASIC_INFORMATION64, *PMEMORY_BASIC_INFORMATION64;
+*/

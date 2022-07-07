@@ -33,6 +33,42 @@ var (
 	procNtFlushVirtualMemory    = modntdll.NewProc("NtFlushVirtualMemory")
 )
 
+// MemoryBasicInformationT has been derived from the MEMORY_BASIC_INFORMATION struct definition.
+type MemoryBasicInformationT struct {
+	BaseAddress       *byte
+	AllocationBase    *byte
+	AllocationProtect uint32
+	PartitionId       uint16
+	RegionSize        uintptr
+	State             uint32
+	Protect           uint32
+	Type              uint32
+}
+
+// MemoryBasicInformation32 has been derived from the MEMORY_BASIC_INFORMATION32 struct definition.
+type MemoryBasicInformation32 struct {
+	BaseAddress       uint32
+	AllocationBase    uint32
+	AllocationProtect uint32
+	RegionSize        uint32
+	State             uint32
+	Protect           uint32
+	Type              uint32
+}
+
+// MemoryBasicInformation64 has been derived from the MEMORY_BASIC_INFORMATION64 struct definition.
+type MemoryBasicInformation64 struct {
+	BaseAddress       uint64
+	AllocationBase    uint64
+	AllocationProtect uint32
+	__alignment1      uint32
+	RegionSize        uint64
+	State             uint32
+	Protect           uint32
+	Type              uint32
+	__alignment2      uint32
+}
+
 // INOUT-parameter: BaseAddress, RegionSize.
 func NtAllocateVirtualMemory(
 	ProcessHandle Handle,
