@@ -110,6 +110,7 @@ var (
 	procNtQueryInformationThread  = modntdll.NewProc("NtQueryInformationThread")
 	procNtSetInformationThread    = modntdll.NewProc("NtSetInformationThread")
 	procNtSetInformationProcess   = modntdll.NewProc("NtSetInformationProcess")
+	procNtCreateProcessEx         = modntdll.NewProc("NtCreateProcessEx")
 )
 
 // Peb has been derived from the PEB struct definition.
@@ -247,5 +248,30 @@ func NtSetInformationProcess(
 		uintptr(ProcessInformationClass),
 		uintptr(unsafe.Pointer(ProcessInformation)),
 		uintptr(ProcessInformationLength))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: ProcessHandle.
+// *OPT-parameter: ObjectAttributes, SectionHandle, DebugPort, ExceptionPort.
+func NtCreateProcessEx(
+	ProcessHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	ParentProcess Handle,
+	Flags uint32,
+	SectionHandle Handle,
+	DebugPort Handle,
+	ExceptionPort Handle,
+	InJob bool,
+) NtStatus {
+	r0, _, _ := procNtCreateProcessEx.Call(uintptr(unsafe.Pointer(ProcessHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(ParentProcess),
+		uintptr(Flags),
+		uintptr(SectionHandle),
+		uintptr(DebugPort),
+		uintptr(ExceptionPort),
+		fromBool(InJob))
 	return NtStatus(r0)
 }

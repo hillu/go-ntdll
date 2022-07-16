@@ -222,6 +222,20 @@ typedef enum _THREAD_INFORMATION_CLASS {
 } THREAD_INFORMATION_CLASS;
 */
 
+/*
+func:
+NTSTATUS NtCreateProcessEx(
+    _Out_ PHANDLE     ProcessHandle,
+    _In_ ACCESS_MASK  DesiredAccess,
+    _In_opt_ POBJECT_ATTRIBUTES ObjectAttributes,
+    _In_ HANDLE   ParentProcess,
+    _In_ ULONG    Flags,
+    _In_opt_ HANDLE SectionHandle,
+    _In_opt_ HANDLE DebugPort,
+    _In_opt_ HANDLE ExceptionPort,
+    _In_ BOOLEAN  InJob
+);
+*/
 const (
 	PROCESS_TERMINATE                 = 0x0001
 	PROCESS_CREATE_THREAD             = 0x0002
