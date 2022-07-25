@@ -41,7 +41,7 @@ containing structure definitions and the glue code around
 License
 -------
 
-Copyright (C) 2016-2021  Hilko Bengen <bengen@hilluzination.de>
+Copyright (C) 2016-2022  Hilko Bengen <bengen@hilluzination.de>
 
 All rights reserved.
 
