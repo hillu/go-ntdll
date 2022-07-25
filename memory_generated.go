@@ -69,6 +69,31 @@ type MemoryBasicInformation64 struct {
 	__alignment2      uint32
 }
 
+// MemoryWorkingSetInformationT has been derived from the MEMORY_WORKING_SET_INFORMATION struct definition.
+type MemoryWorkingSetInformationT struct {
+	NumberOfEntries *uint32
+	WorkingSetInfo  [1]MemoryWorkingSetBlock
+}
+
+// MemoryRegionInformationT has been derived from the MEMORY_REGION_INFORMATION struct definition.
+type MemoryRegionInformationT struct {
+	AllocationBase    *byte
+	AllocationProtect uint32
+	RegionType        uint32
+	RegionSize        uintptr
+}
+
+// MemoryWorkingSetExInformationT has been derived from the MEMORY_WORKING_SET_EX_INFORMATION struct definition.
+type MemoryWorkingSetExInformationT struct {
+	VirtualAddress    *byte
+	VirtualAttributes MemoryWorkingSetExBlock
+}
+
+// MemorySharedCommitInformationT has been derived from the MEMORY_SHARED_COMMIT_INFORMATION struct definition.
+type MemorySharedCommitInformationT struct {
+	CommitSize uintptr
+}
+
 // INOUT-parameter: BaseAddress, RegionSize.
 func NtAllocateVirtualMemory(
 	ProcessHandle Handle,

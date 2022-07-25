@@ -140,3 +140,110 @@ typedef struct _MEMORY_BASIC_INFORMATION64 {
     DWORD     __alignment2;
 } MEMORY_BASIC_INFORMATION64, *PMEMORY_BASIC_INFORMATION64;
 */
+
+/*
+type:
+typedef struct _MEMORY_WORKING_SET_INFORMATION
+{
+    ULONG_PTR NumberOfEntries;
+    MEMORY_WORKING_SET_BLOCK WorkingSetInfo[1];
+} MEMORY_WORKING_SET_INFORMATION, *PMEMORY_WORKING_SET_INFORMATION;
+*/
+
+/*
+NOTE: type contains unions -- define below.
+
+typedef struct _MEMORY_WORKING_SET_BLOCK
+{
+    ULONG_PTR Protection : 5;
+    ULONG_PTR ShareCount : 3;
+    ULONG_PTR Shared : 1;
+    ULONG_PTR Node : 3;
+#ifdef _WIN64
+    ULONG_PTR VirtualPage : 52;
+#else
+    ULONG VirtualPage : 20;
+#endif
+} MEMORY_WORKING_SET_BLOCK, *PMEMORY_WORKING_SET_BLOCK;
+*/
+
+type MemoryWorkingSetBlock uintptr
+
+// TODO: Add MemoryWorkingSetBlock accessors
+
+/*
+type:
+typedef struct _MEMORY_REGION_INFORMATION
+{
+    PVOID AllocationBase;
+    ULONG AllocationProtect;
+    ULONG RegionType;
+    SIZE_T RegionSize;
+} MEMORY_REGION_INFORMATION, *PMEMORY_REGION_INFORMATION;
+*/
+
+/*
+type:
+typedef struct _MEMORY_WORKING_SET_EX_INFORMATION
+{
+    PVOID VirtualAddress;
+    MEMORY_WORKING_SET_EX_BLOCK VirtualAttributes;
+} MEMORY_WORKING_SET_EX_INFORMATION, *PMEMORY_WORKING_SET_EX_INFORMATION;
+*/
+
+/*
+NOTE: type contains unions -- define below.
+
+typedef struct _MEMORY_WORKING_SET_EX_BLOCK
+{
+    union
+    {
+        struct
+        {
+            ULONG_PTR Valid : 1;
+            ULONG_PTR ShareCount : 3;
+            ULONG_PTR Win32Protection : 11;
+            ULONG_PTR Shared : 1;
+            ULONG_PTR Node : 6;
+            ULONG_PTR Locked : 1;
+            ULONG_PTR LargePage : 1;
+            ULONG_PTR Priority : 3;
+            ULONG_PTR Reserved : 3;
+            ULONG_PTR SharedOriginal : 1;
+            ULONG_PTR Bad : 1;
+#ifdef _WIN64
+            ULONG_PTR ReservedUlong : 32;
+#endif
+        };
+        struct
+        {
+            ULONG_PTR Valid : 1;
+            ULONG_PTR Reserved0 : 14;
+            ULONG_PTR Shared : 1;
+            ULONG_PTR Reserved1 : 5;
+            ULONG_PTR PageTable : 1;
+            ULONG_PTR Location : 2;
+            ULONG_PTR Priority : 3;
+            ULONG_PTR ModifiedList : 1;
+            ULONG_PTR Reserved2 : 2;
+            ULONG_PTR SharedOriginal : 1;
+            ULONG_PTR Bad : 1;
+#ifdef _WIN64
+            ULONG_PTR ReservedUlong : 32;
+#endif
+        } Invalid;
+    };
+} MEMORY_WORKING_SET_EX_BLOCK, *PMEMORY_WORKING_SET_EX_BLOCK;
+*/
+
+type MemoryWorkingSetExBlock uintptr
+
+// TODO: Add MemoryWorkingSetExBlock accessors
+
+/*
+type:
+typedef struct _MEMORY_SHARED_COMMIT_INFORMATION
+{
+    SIZE_T CommitSize;
+} MEMORY_SHARED_COMMIT_INFORMATION, *PMEMORY_SHARED_COMMIT_INFORMATION;
+*/
