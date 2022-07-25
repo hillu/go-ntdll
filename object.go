@@ -68,6 +68,17 @@ NTSTATUS NtCreateDirectoryObject(
 
 /*
 func:
+NTSTATUS NtCreateDirectoryObjectEx(
+    _Out_ PHANDLE DirectoryHandle,
+    _In_ ACCESS_MASK DesiredAccess,
+    _In_ POBJECT_ATTRIBUTES ObjectAttributes,
+    _In_ HANDLE ShadowDirectoryHandle,
+    _In_ ULONG Flags
+);
+*/
+
+/*
+func:
 NTSTATUS NtQueryObject (
     _In_opt_ HANDLE Handle,
     _In_ OBJECT_INFORMATION_CLASS ObjectInformationClass,

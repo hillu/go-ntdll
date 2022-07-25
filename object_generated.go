@@ -23,6 +23,7 @@ var (
 	procNtQuerySymbolicLinkObject  = modntdll.NewProc("NtQuerySymbolicLinkObject")
 	procNtCreateSymbolicLinkObject = modntdll.NewProc("NtCreateSymbolicLinkObject")
 	procNtCreateDirectoryObject    = modntdll.NewProc("NtCreateDirectoryObject")
+	procNtCreateDirectoryObjectEx  = modntdll.NewProc("NtCreateDirectoryObjectEx")
 	procNtQueryObject              = modntdll.NewProc("NtQueryObject")
 	procNtDuplicateObject          = modntdll.NewProc("NtDuplicateObject")
 )
@@ -193,6 +194,22 @@ func NtCreateDirectoryObject(
 	r0, _, _ := procNtCreateDirectoryObject.Call(uintptr(unsafe.Pointer(DirectoryHandle)),
 		uintptr(DesiredAccess),
 		uintptr(unsafe.Pointer(ObjectAttributes)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: DirectoryHandle.
+func NtCreateDirectoryObjectEx(
+	DirectoryHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	ShadowDirectoryHandle Handle,
+	Flags uint32,
+) NtStatus {
+	r0, _, _ := procNtCreateDirectoryObjectEx.Call(uintptr(unsafe.Pointer(DirectoryHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(ShadowDirectoryHandle),
+		uintptr(Flags))
 	return NtStatus(r0)
 }
 
