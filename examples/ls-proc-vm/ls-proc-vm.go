@@ -25,7 +25,7 @@ func query_vm(ph ntdll.Handle, base uintptr) (*ntdll.MemoryBasicInformationT, nt
 	return &mbi, s
 }
 
-func query_name (ph ntdll.Handle, base uintptr) (string, ntdll.NtStatus) {
+func query_name(ph ntdll.Handle, base uintptr) (string, ntdll.NtStatus) {
 	buf := [1024]byte{}
 	s := ntdll.NtQueryVirtualMemory(
 		ph,
@@ -44,21 +44,49 @@ func query_name (ph ntdll.Handle, base uintptr) (string, ntdll.NtStatus) {
 type memProtect uint32
 
 func (p memProtect) String() string {
-	r:= []byte("----")
-	if p & ntdll.PAGE_NOACCESS != 0 { r[3] = '!' }
-	if p & ntdll.PAGE_READONLY != 0 { r[0] = 'r' }
-	if p & ntdll.PAGE_READWRITE != 0 { r[0] = 'r'; r[1] = 'w' }
-	if p & ntdll.PAGE_WRITECOPY != 0 { r[1] = 'w'; r[3] = 'c' }
-	if p & ntdll.PAGE_EXECUTE != 0 { r[2] = 'x' }
-	if p & ntdll.PAGE_EXECUTE_READ != 0 { r[0] = 'r'; r[2] = 'x' }
-	if p & ntdll.PAGE_EXECUTE_READWRITE != 0 { r[0] = 'r'; r[1] = 'w'; r[2] = 'x' }
-	if p & ntdll.PAGE_EXECUTE_WRITECOPY != 0 { r[1] = 'x'; r[2] = 'x'; r[3] = 'c' }
-	if p & ntdll.PAGE_GUARD!= 0 { r[3] = 'G' }
-	if p & ntdll.PAGE_NOCACHE != 0 { r[3] = 'C' }
+	r := []byte("----")
+	if p&ntdll.PAGE_NOACCESS != 0 {
+		r[3] = '!'
+	}
+	if p&ntdll.PAGE_READONLY != 0 {
+		r[0] = 'r'
+	}
+	if p&ntdll.PAGE_READWRITE != 0 {
+		r[0] = 'r'
+		r[1] = 'w'
+	}
+	if p&ntdll.PAGE_WRITECOPY != 0 {
+		r[1] = 'w'
+		r[3] = 'c'
+	}
+	if p&ntdll.PAGE_EXECUTE != 0 {
+		r[2] = 'x'
+	}
+	if p&ntdll.PAGE_EXECUTE_READ != 0 {
+		r[0] = 'r'
+		r[2] = 'x'
+	}
+	if p&ntdll.PAGE_EXECUTE_READWRITE != 0 {
+		r[0] = 'r'
+		r[1] = 'w'
+		r[2] = 'x'
+	}
+	if p&ntdll.PAGE_EXECUTE_WRITECOPY != 0 {
+		r[1] = 'x'
+		r[2] = 'x'
+		r[3] = 'c'
+	}
+	if p&ntdll.PAGE_GUARD != 0 {
+		r[3] = 'G'
+	}
+	if p&ntdll.PAGE_NOCACHE != 0 {
+		r[3] = 'C'
+	}
 	return string(r)
 }
 
 type memState uint32
+
 func (s memState) String() string {
 	r := []byte("---")
 	if s&ntdll.MEM_COMMIT != 0 {
@@ -68,12 +96,13 @@ func (s memState) String() string {
 		r[1] = 'r'
 	}
 	if s&ntdll.MEM_FREE != 0 {
-		r[2] = 'f' 
+		r[2] = 'f'
 	}
 	return string(r)
 }
 
 type memType uint32
+
 func (s memType) String() string {
 	r := []byte("---")
 	if s&ntdll.MEM_MAPPED != 0 {
@@ -99,7 +128,7 @@ func main() {
 
 	var ph ntdll.Handle
 	oa := ntdll.NewObjectAttributes("", 0, 0, nil)
-	client := ntdll.ClientId{ ntdll.Handle(pid), 0}
+	client := ntdll.ClientId{ntdll.Handle(pid), 0}
 	s := ntdll.NtOpenProcess(&ph, ntdll.PROCESS_QUERY_INFORMATION, oa, &client)
 	if s.IsError() {
 		fmt.Printf("NtOpenProcess: %s", s)
