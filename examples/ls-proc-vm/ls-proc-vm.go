@@ -146,7 +146,7 @@ func main() {
 		}
 		name, _ := query_name(ph, addr)
 		if mbi.AllocationBase != nil {
-			fmt.Printf("%12x %12x + %12x ty:%s st:%s pr:=%s %s\n",
+			fmt.Printf("%12x %12x + %12x ty:%s st:%s pr:%s %s\n",
 				uintptr(unsafe.Pointer(mbi.AllocationBase)),
 				uintptr(unsafe.Pointer(mbi.BaseAddress)),
 				mbi.RegionSize,
