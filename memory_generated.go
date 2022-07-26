@@ -81,6 +81,9 @@ type MemoryRegionInformationT struct {
 	AllocationProtect uint32
 	RegionType        uint32
 	RegionSize        uintptr
+	CommitSize        uintptr
+	PartitionId       *uint32
+	NodePreference    *uint32
 }
 
 // MemoryWorkingSetExInformationT has been derived from the MEMORY_WORKING_SET_EX_INFORMATION struct definition.
@@ -92,6 +95,13 @@ type MemoryWorkingSetExInformationT struct {
 // MemorySharedCommitInformationT has been derived from the MEMORY_SHARED_COMMIT_INFORMATION struct definition.
 type MemorySharedCommitInformationT struct {
 	CommitSize uintptr
+}
+
+// MemoryImageInformationT has been derived from the MEMORY_IMAGE_INFORMATION struct definition.
+type MemoryImageInformationT struct {
+	ImageBase   *byte
+	SizeOfImage uintptr
+	ImageFlags  uint32
 }
 
 // INOUT-parameter: BaseAddress, RegionSize.
