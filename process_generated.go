@@ -110,6 +110,7 @@ var (
 	procNtQueryInformationThread  = modntdll.NewProc("NtQueryInformationThread")
 	procNtSetInformationThread    = modntdll.NewProc("NtSetInformationThread")
 	procNtSetInformationProcess   = modntdll.NewProc("NtSetInformationProcess")
+	procNtCreateProcess           = modntdll.NewProc("NtCreateProcess")
 	procNtCreateProcessEx         = modntdll.NewProc("NtCreateProcessEx")
 )
 
@@ -248,6 +249,29 @@ func NtSetInformationProcess(
 		uintptr(ProcessInformationClass),
 		uintptr(unsafe.Pointer(ProcessInformation)),
 		uintptr(ProcessInformationLength))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: ProcessHandle.
+// *OPT-parameter: ObjectAttributes, SectionHandle, DebugPort, TokenHandle.
+func NtCreateProcess(
+	ProcessHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+	ParentProcess Handle,
+	InheritObjectTable bool,
+	SectionHandle Handle,
+	DebugPort Handle,
+	TokenHandle Handle,
+) NtStatus {
+	r0, _, _ := procNtCreateProcess.Call(uintptr(unsafe.Pointer(ProcessHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)),
+		uintptr(ParentProcess),
+		fromBool(InheritObjectTable),
+		uintptr(SectionHandle),
+		uintptr(DebugPort),
+		uintptr(TokenHandle))
 	return NtStatus(r0)
 }
 

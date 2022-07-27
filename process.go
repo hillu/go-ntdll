@@ -224,6 +224,21 @@ typedef enum _THREAD_INFORMATION_CLASS {
 
 /*
 func:
+NTSTATUS
+NtCreateProcess(
+    _Out_ PHANDLE ProcessHandle,
+    _In_ ACCESS_MASK DesiredAccess,
+    _In_opt_ POBJECT_ATTRIBUTES ObjectAttributes,
+    _In_ HANDLE ParentProcess,
+    _In_ BOOLEAN InheritObjectTable,
+    _In_opt_ HANDLE SectionHandle,
+    _In_opt_ HANDLE DebugPort,
+    _In_opt_ HANDLE TokenHandle
+);
+*/
+
+/*
+func:
 NTSTATUS NtCreateProcessEx(
     _Out_ PHANDLE     ProcessHandle,
     _In_ ACCESS_MASK  DesiredAccess,
