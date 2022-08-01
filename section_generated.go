@@ -5,6 +5,17 @@ package ntdll
 
 import "unsafe"
 
+// The SectionInformationClass constants have been derived from the SECTION_INFORMATION_CLASS enum definition.
+type SectionInformationClass uint32
+
+const (
+	SectionBasicInformation         SectionInformationClass = 0
+	SectionImageInformation                                 = 1
+	SectionRelocationInformation                            = 2
+	SectionOriginalBaseInformation                          = 3
+	SectionInternalImageInformation                         = 4
+)
+
 // The SectionInherit constants have been derived from the SECTION_INHERIT enum definition.
 type SectionInherit uint32
 
@@ -14,10 +25,40 @@ const (
 )
 
 var (
-	procNtCreateSection     = modntdll.NewProc("NtCreateSection")
-	procNtOpenSection       = modntdll.NewProc("NtOpenSection")
-	procNtwMapViewOfSection = modntdll.NewProc("NtwMapViewOfSection")
+	procNtCreateSection        = modntdll.NewProc("NtCreateSection")
+	procNtExtendSection        = modntdll.NewProc("NtExtendSection")
+	procNtwMapViewOfSection    = modntdll.NewProc("NtwMapViewOfSection")
+	procNtOpenSection          = modntdll.NewProc("NtOpenSection")
+	procNtQuerySection         = modntdll.NewProc("NtQuerySection")
+	procNtUnmapViewOfSection   = modntdll.NewProc("NtUnmapViewOfSection")
+	procNtUnmapViewOfSectionEx = modntdll.NewProc("NtUnmapViewOfSectionEx")
 )
+
+// SectionBasicInformationT has been derived from the SECTION_BASIC_INFORMATION struct definition.
+type SectionBasicInformationT struct {
+	BaseAddress          *byte
+	AllocationAttributes uint32
+	MaximumSize          int64
+}
+
+// SectionImageInformationT has been derived from the SECTION_IMAGE_INFORMATION struct definition.
+type SectionImageInformationT struct {
+	TransferAddress        *byte
+	ZeroBits               uint32
+	MaximumStackSize       uintptr
+	CommittedStackSize     uintptr
+	SubSystemType          uint32
+	SubSystemVersion       uint32
+	OperatingSystemVersion uint32
+	ImageCharacteristics   uint16
+	DllCharacteristics     uint16
+	Machine                uint16
+	ImageContainsCode      bool
+	ImageFlags             byte
+	LoaderFlags            uint32
+	ImageFileSize          uint32
+	CheckSum               uint32
+}
 
 // OUT-parameter: SectionHandle.
 // *OPT-parameter: ObjectAttributes, MaximumSize, FileHandle.
@@ -40,15 +81,13 @@ func NtCreateSection(
 	return NtStatus(r0)
 }
 
-// OUT-parameter: SectionHandle.
-func NtOpenSection(
-	SectionHandle *Handle,
-	DesiredAccess AccessMask,
-	ObjectAttributes *ObjectAttributes,
+// INOUT-parameter: NewSectionSize.
+func NtExtendSection(
+	SectionHandle Handle,
+	NewSectionSize *int64,
 ) NtStatus {
-	r0, _, _ := procNtOpenSection.Call(uintptr(unsafe.Pointer(SectionHandle)),
-		uintptr(DesiredAccess),
-		uintptr(unsafe.Pointer(ObjectAttributes)))
+	r0, _, _ := procNtExtendSection.Call(uintptr(SectionHandle),
+		uintptr(unsafe.Pointer(NewSectionSize)))
 	return NtStatus(r0)
 }
 
@@ -76,5 +115,56 @@ func NtwMapViewOfSection(
 		uintptr(InheritDisposition),
 		uintptr(AllocationType),
 		uintptr(Win32Protect))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: SectionHandle.
+func NtOpenSection(
+	SectionHandle *Handle,
+	DesiredAccess AccessMask,
+	ObjectAttributes *ObjectAttributes,
+) NtStatus {
+	r0, _, _ := procNtOpenSection.Call(uintptr(unsafe.Pointer(SectionHandle)),
+		uintptr(DesiredAccess),
+		uintptr(unsafe.Pointer(ObjectAttributes)))
+	return NtStatus(r0)
+}
+
+// OUT-parameter: SectionInformation, ReturnLength.
+// *OPT-parameter: ReturnLength.
+func NtQuerySection(
+	SectionHandle Handle,
+	SectionInformationClass SectionInformationClass,
+	SectionInformation *byte,
+	SectionInformationLength uintptr,
+	ReturnLength *uintptr,
+) NtStatus {
+	r0, _, _ := procNtQuerySection.Call(uintptr(SectionHandle),
+		uintptr(SectionInformationClass),
+		uintptr(unsafe.Pointer(SectionInformation)),
+		uintptr(SectionInformationLength),
+		uintptr(unsafe.Pointer(ReturnLength)))
+	return NtStatus(r0)
+}
+
+// *OPT-parameter: BaseAddress.
+func NtUnmapViewOfSection(
+	ProcessHandle Handle,
+	BaseAddress *byte,
+) NtStatus {
+	r0, _, _ := procNtUnmapViewOfSection.Call(uintptr(ProcessHandle),
+		uintptr(unsafe.Pointer(BaseAddress)))
+	return NtStatus(r0)
+}
+
+// *OPT-parameter: BaseAddress.
+func NtUnmapViewOfSectionEx(
+	ProcessHandle Handle,
+	BaseAddress *byte,
+	Flags uint32,
+) NtStatus {
+	r0, _, _ := procNtUnmapViewOfSectionEx.Call(uintptr(ProcessHandle),
+		uintptr(unsafe.Pointer(BaseAddress)),
+		uintptr(Flags))
 	return NtStatus(r0)
 }
