@@ -312,6 +312,7 @@ NTSTATUS NtCreateProcessEx(
     _In_ BOOLEAN  InJob
 );
 */
+
 const (
 	PROCESS_TERMINATE                 = 0x0001
 	PROCESS_CREATE_THREAD             = 0x0002
