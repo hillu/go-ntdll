@@ -72,7 +72,7 @@ func (p memProtect) String() string {
 		r[2] = 'x'
 	}
 	if p&ntdll.PAGE_EXECUTE_WRITECOPY != 0 {
-		r[1] = 'x'
+		r[1] = 'w'
 		r[2] = 'x'
 		r[3] = 'c'
 	}
