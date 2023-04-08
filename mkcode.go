@@ -64,8 +64,9 @@ type FunctionDefinition struct {
 }
 
 type StructMemberDefinition struct {
-	Name string
-	Type string
+	Name  string
+	Type  string
+	Slice bool
 }
 
 type StructDefinition struct {
@@ -312,7 +313,8 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 					}
 					m.Type = "[" + s.TokenText() + "]" + m.Type
 				} else if r == scanner.Ident && s.TokenText() == "ANYSIZE_ARRAY" {
-					m.Type = "[1]" + m.Type
+					m.Type = m.Type
+					m.Slice = true
 				} else {
 					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", sd.OriginalName, s.TokenText())
 				}
@@ -542,6 +544,15 @@ funcs:
 			}
 		}
 	}
+structs:
+	for _, st := range structs {
+		for _, m := range st.Members {
+			if m.Slice {
+				fmt.Fprintln(buf, `import "reflect"`)
+				break structs
+			}
+		}
+	}
 
 	for _, enum := range enums {
 		fmt.Fprintf(buf, `// The %[1]s constants have been derived from the %[2]s enum definition.
@@ -568,14 +579,33 @@ type %[1]s uint32; const (
 	}
 
 	for _, st := range structs {
+		accessors := []StructMemberDefinition{}
 		fmt.Fprintf(buf, `// %[1]s has been derived from the %[2]s struct definition.
 type %[1]s struct {
 `,
 			st.Name, st.OriginalName)
 		for _, m := range st.Members {
-			fmt.Fprintf(buf, "%s %s\n", m.Name, m.Type)
+			prefix := ""
+			if m.Slice {
+				prefix = "[1]"
+				accessors = append(accessors, m)
+			}
+			fmt.Fprintf(buf, "%s %s%s\n", m.Name, prefix, m.Type)
 		}
 		fmt.Fprint(buf, "}\n\n")
+		for _, m := range accessors {
+			fmt.Fprintf(buf, `
+// %[2]sSlice returns a slice over the elements of %[1]s.%[2]s
+func (t *%[1]s) %[2]sSlice(size int) []%[3]s {
+    s := []%[3]s{}
+    hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+    hdr.Data = uintptr(unsafe.Pointer(&t.%[2]s[0]))
+    hdr.Len = size
+    hdr.Cap = size
+    return s
+}
+`, st.Name, m.Name, m.Type)
+		}
 	}
 
 	for _, function := range functions {

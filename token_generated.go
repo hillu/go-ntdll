@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The TokenTypeT constants have been derived from the TOKEN_TYPE enum definition.
 type TokenTypeT uint32
@@ -99,10 +100,30 @@ type TokenGroupsT struct {
 	Groups     [1]SidAndAttributes
 }
 
+// GroupsSlice returns a slice over the elements of TokenGroupsT.Groups
+func (t *TokenGroupsT) GroupsSlice(size int) []SidAndAttributes {
+	s := []SidAndAttributes{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Groups[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
 // TokenPrivilegesT has been derived from the TOKEN_PRIVILEGES struct definition.
 type TokenPrivilegesT struct {
 	PrivilegeCount uint32
 	Privileges     [1]LuidAndAttributes
+}
+
+// PrivilegesSlice returns a slice over the elements of TokenPrivilegesT.Privileges
+func (t *TokenPrivilegesT) PrivilegesSlice(size int) []LuidAndAttributes {
+	s := []LuidAndAttributes{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Privileges[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
 }
 
 // TokenOwnerT has been derived from the TOKEN_OWNER struct definition.

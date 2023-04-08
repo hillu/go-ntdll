@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The SystemInformationClass constants have been derived from the SYSTEM_INFORMATION_CLASS enum definition.
 type SystemInformationClass uint32
@@ -317,6 +318,16 @@ type SystemPagefileInformationT struct {
 type SystemModuleInformationT struct {
 	ModulesCount uint32
 	Modules      [1]SystemModule
+}
+
+// ModulesSlice returns a slice over the elements of SystemModuleInformationT.Modules
+func (t *SystemModuleInformationT) ModulesSlice(size int) []SystemModule {
+	s := []SystemModule{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Modules[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
 }
 
 // OUT-parameter: SystemInformation, ReturnLength.

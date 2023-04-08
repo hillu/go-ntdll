@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 var (
 	procNtQuerySecurityObject = modntdll.NewProc("NtQuerySecurityObject")
@@ -25,6 +26,16 @@ type Sid struct {
 	SubAuthorityCount   byte
 	IdentifierAuthority SidIdentifierAuthority
 	SubAuthority        [1]uint32
+}
+
+// SubAuthoritySlice returns a slice over the elements of Sid.SubAuthority
+func (t *Sid) SubAuthoritySlice(size int) []uint32 {
+	s := []uint32{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.SubAuthority[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
 }
 
 // SidIdentifierAuthority has been derived from the SID_IDENTIFIER_AUTHORITY struct definition.
