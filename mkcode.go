@@ -578,7 +578,7 @@ type %[1]s uint32; const (
 		fmt.Fprintln(buf, "var (")
 		for _, function := range functions {
 			fmt.Fprintf(buf, `proc%[1]s = modntdll.NewProc("%[1]s")`, function.Name)
-			fmt.Fprinln(buf)
+			fmt.Fprintln(buf)
 		}
 		fmt.Fprintln(buf, ")")
 	}
