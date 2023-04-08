@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The FileInformationClass constants have been derived from the FILE_INFORMATION_CLASS enum definition.
 type FileInformationClass uint32
@@ -129,6 +130,30 @@ type FileDirectoryInformationT struct {
 	FileName        [1]uint16
 }
 
+// FileNameSlice returns a slice over the elements of FileDirectoryInformationT.FileName.
+//
+// Beware: The data is not copied out of FileDirectoryInformationT. The size can usually be taken from an other member of the struct (FileDirectoryInformationT).
+func (t *FileDirectoryInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileDirectoryInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileDirectoryInformationT) usually has to be set to the array size.
+func (t *FileDirectoryInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // FileFullDirInformationT has been derived from the FILE_FULL_DIR_INFORMATION struct definition.
 type FileFullDirInformationT struct {
 	NextEntryOffset uint32
@@ -143,6 +168,30 @@ type FileFullDirInformationT struct {
 	FileNameLength  uint32
 	EaSize          uint32
 	FileName        [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileFullDirInformationT.FileName.
+//
+// Beware: The data is not copied out of FileFullDirInformationT. The size can usually be taken from an other member of the struct (FileFullDirInformationT).
+func (t *FileFullDirInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileFullDirInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileFullDirInformationT) usually has to be set to the array size.
+func (t *FileFullDirInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileBothDirInformationT has been derived from the FILE_BOTH_DIR_INFORMATION struct definition.
@@ -161,6 +210,30 @@ type FileBothDirInformationT struct {
 	ShortNameLength byte
 	ShortName       [12]uint16
 	FileName        [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileBothDirInformationT.FileName.
+//
+// Beware: The data is not copied out of FileBothDirInformationT. The size can usually be taken from an other member of the struct (FileBothDirInformationT).
+func (t *FileBothDirInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileBothDirInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileBothDirInformationT) usually has to be set to the array size.
+func (t *FileBothDirInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileBasicInformationT has been derived from the FILE_BASIC_INFORMATION struct definition.
@@ -202,12 +275,60 @@ type FileNameInformationT struct {
 	FileName       [1]uint16
 }
 
+// FileNameSlice returns a slice over the elements of FileNameInformationT.FileName.
+//
+// Beware: The data is not copied out of FileNameInformationT. The size can usually be taken from an other member of the struct (FileNameInformationT).
+func (t *FileNameInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileNameInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileNameInformationT) usually has to be set to the array size.
+func (t *FileNameInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // FileRenameInformationT has been derived from the FILE_RENAME_INFORMATION struct definition.
 type FileRenameInformationT struct {
 	ReplaceIfExists bool
 	RootDirectory   Handle
 	FileNameLength  uint32
 	FileName        [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileRenameInformationT.FileName.
+//
+// Beware: The data is not copied out of FileRenameInformationT. The size can usually be taken from an other member of the struct (FileRenameInformationT).
+func (t *FileRenameInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileRenameInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileRenameInformationT) usually has to be set to the array size.
+func (t *FileRenameInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileLinkInformationT has been derived from the FILE_LINK_INFORMATION struct definition.
@@ -218,12 +339,60 @@ type FileLinkInformationT struct {
 	FileName        [1]uint16
 }
 
+// FileNameSlice returns a slice over the elements of FileLinkInformationT.FileName.
+//
+// Beware: The data is not copied out of FileLinkInformationT. The size can usually be taken from an other member of the struct (FileLinkInformationT).
+func (t *FileLinkInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileLinkInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileLinkInformationT) usually has to be set to the array size.
+func (t *FileLinkInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // FileNamesInformationT has been derived from the FILE_NAMES_INFORMATION struct definition.
 type FileNamesInformationT struct {
 	NextEntryOffset uint32
 	FileIndex       uint32
 	FileNameLength  uint32
 	FileName        [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileNamesInformationT.FileName.
+//
+// Beware: The data is not copied out of FileNamesInformationT. The size can usually be taken from an other member of the struct (FileNamesInformationT).
+func (t *FileNamesInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileNamesInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileNamesInformationT) usually has to be set to the array size.
+func (t *FileNamesInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileDispositionInformationT has been derived from the FILE_DISPOSITION_INFORMATION struct definition.
@@ -243,6 +412,30 @@ type FileFullEaInformationT struct {
 	EaNameLength    byte
 	EaValueLength   uint16
 	EaName          [1]byte
+}
+
+// EaNameSlice returns a slice over the elements of FileFullEaInformationT.EaName.
+//
+// Beware: The data is not copied out of FileFullEaInformationT. The size can usually be taken from an other member of the struct (FileFullEaInformationT).
+func (t *FileFullEaInformationT) EaNameSlice(size int) []byte {
+	s := []byte{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.EaName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetEaNameSlice copies s into the memory at FileFullEaInformationT.EaName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileFullEaInformationT) usually has to be set to the array size.
+func (t *FileFullEaInformationT) SetEaNameSlice(s []byte) {
+	s1 := []byte{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.EaName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileModeInformationT has been derived from the FILE_MODE_INFORMATION struct definition.
@@ -285,6 +478,30 @@ type FileStreamInformationT struct {
 	StreamSize           int64
 	StreamAllocationSize int64
 	StreamName           [1]uint16
+}
+
+// StreamNameSlice returns a slice over the elements of FileStreamInformationT.StreamName.
+//
+// Beware: The data is not copied out of FileStreamInformationT. The size can usually be taken from an other member of the struct (FileStreamInformationT).
+func (t *FileStreamInformationT) StreamNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.StreamName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetStreamNameSlice copies s into the memory at FileStreamInformationT.StreamName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileStreamInformationT) usually has to be set to the array size.
+func (t *FileStreamInformationT) SetStreamNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.StreamName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FilePipeInformationT has been derived from the FILE_PIPE_INFORMATION struct definition.
@@ -390,6 +607,30 @@ type FileIdBothDirInformationT struct {
 	FileName        [1]uint16
 }
 
+// FileNameSlice returns a slice over the elements of FileIdBothDirInformationT.FileName.
+//
+// Beware: The data is not copied out of FileIdBothDirInformationT. The size can usually be taken from an other member of the struct (FileIdBothDirInformationT).
+func (t *FileIdBothDirInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileIdBothDirInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileIdBothDirInformationT) usually has to be set to the array size.
+func (t *FileIdBothDirInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // FileIdFullDirInformationT has been derived from the FILE_ID_FULL_DIR_INFORMATION struct definition.
 type FileIdFullDirInformationT struct {
 	NextEntryOffset uint32
@@ -405,6 +646,30 @@ type FileIdFullDirInformationT struct {
 	EaSize          uint32
 	FileId          int64
 	FileName        [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileIdFullDirInformationT.FileName.
+//
+// Beware: The data is not copied out of FileIdFullDirInformationT. The size can usually be taken from an other member of the struct (FileIdFullDirInformationT).
+func (t *FileIdFullDirInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileIdFullDirInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileIdFullDirInformationT) usually has to be set to the array size.
+func (t *FileIdFullDirInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileValidDataLengthInformationT has been derived from the FILE_VALID_DATA_LENGTH_INFORMATION struct definition.
@@ -438,6 +703,30 @@ type FileNetworkPhysicalNameInformationT struct {
 	FileName       [1]uint16
 }
 
+// FileNameSlice returns a slice over the elements of FileNetworkPhysicalNameInformationT.FileName.
+//
+// Beware: The data is not copied out of FileNetworkPhysicalNameInformationT. The size can usually be taken from an other member of the struct (FileNetworkPhysicalNameInformationT).
+func (t *FileNetworkPhysicalNameInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileNetworkPhysicalNameInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileNetworkPhysicalNameInformationT) usually has to be set to the array size.
+func (t *FileNetworkPhysicalNameInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // FileIdGlobalTxDirInformationT has been derived from the FILE_ID_GLOBAL_TX_DIR_INFORMATION struct definition.
 type FileIdGlobalTxDirInformationT struct {
 	NextEntryOffset      uint32
@@ -454,6 +743,30 @@ type FileIdGlobalTxDirInformationT struct {
 	LockingTransactionId Guid
 	TxInfoFlags          uint32
 	FileName             [1]uint16
+}
+
+// FileNameSlice returns a slice over the elements of FileIdGlobalTxDirInformationT.FileName.
+//
+// Beware: The data is not copied out of FileIdGlobalTxDirInformationT. The size can usually be taken from an other member of the struct (FileIdGlobalTxDirInformationT).
+func (t *FileIdGlobalTxDirInformationT) FileNameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetFileNameSlice copies s into the memory at FileIdGlobalTxDirInformationT.FileName.
+//
+// Beware: No bounds check is performed. Another member of the struct (FileIdGlobalTxDirInformationT) usually has to be set to the array size.
+func (t *FileIdGlobalTxDirInformationT) SetFileNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.FileName[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // FileCompletionInformationT has been derived from the FILE_COMPLETION_INFORMATION struct definition.

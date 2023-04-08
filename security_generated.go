@@ -28,7 +28,9 @@ type Sid struct {
 	SubAuthority        [1]uint32
 }
 
-// SubAuthoritySlice returns a slice over the elements of Sid.SubAuthority
+// SubAuthoritySlice returns a slice over the elements of Sid.SubAuthority.
+//
+// Beware: The data is not copied out of Sid. The size can usually be taken from an other member of the struct (Sid).
 func (t *Sid) SubAuthoritySlice(size int) []uint32 {
 	s := []uint32{}
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
@@ -36,6 +38,18 @@ func (t *Sid) SubAuthoritySlice(size int) []uint32 {
 	hdr.Len = size
 	hdr.Cap = size
 	return s
+}
+
+// SetSubAuthoritySlice copies s into the memory at Sid.SubAuthority.
+//
+// Beware: No bounds check is performed. Another member of the struct (Sid) usually has to be set to the array size.
+func (t *Sid) SetSubAuthoritySlice(s []uint32) {
+	s1 := []uint32{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.SubAuthority[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // SidIdentifierAuthority has been derived from the SID_IDENTIFIER_AUTHORITY struct definition.

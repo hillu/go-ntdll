@@ -23,6 +23,33 @@ NTDLL functions usually return an `NTSTATUS`, this is mapped into an
 passed around as `UNICODE_STRING`, there is a type `UnicodeStringType`
 for that.
 
+Variable-Sized Arrays
+---------------------
+
+Structs that contain fields that are arrays with one (or
+`ANYSIZE_ARRAY`) elements. For those fields, getters that return a
+slice and setters that fill the array from a slice are generated.
+
+Example:
+``` c
+typedef struct _FILE_NAME_INFORMATION {
+  ULONG FileNameLength;
+  WCHAR FileName[1];
+} FILE_NAME_INFORMATION, *PFILE_NAME_INFORMATION;
+```
+is turned into
+``` go
+type FileNameInformationT struct {
+	FileNameLength uint32
+	FileName       [1]uint16
+}
+```
+and associated methods
+``` go
+func (t *FileNameInformationT) FileNameSlice(size int) []uint16
+func (t *FileNameInformationT) SetFileNameSlice(s []uint16)
+```
+
 Extending
 ---------
 

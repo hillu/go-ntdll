@@ -1,7 +1,6 @@
 package ntdll
 
 import (
-	"reflect"
 	"unsafe"
 )
 
@@ -169,10 +168,7 @@ typedef struct _TOKEN_GROUPS {
 */
 
 func (tg *TokenGroupsT) GetGroups() []SidAndAttributes {
-	groups := make([]SidAndAttributes, int(tg.GroupCount))
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&groups))
-	hdr.Data = uintptr(unsafe.Pointer(&tg.Groups[0]))
-	return groups
+	return tg.GroupsSlice(int(tg.GroupCount))
 }
 
 /*
@@ -184,18 +180,12 @@ typedef struct _TOKEN_PRIVILEGES {
 */
 
 func (tp *TokenPrivilegesT) GetPrivileges() []LuidAndAttributes {
-	privileges := make([]LuidAndAttributes, int(tp.PrivilegeCount))
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&privileges))
-	hdr.Data = uintptr(unsafe.Pointer(&tp.Privileges[0]))
-	return privileges
+	return tp.PrivilegesSlice(int(tp.PrivilegeCount))
 }
 
 func (tp *TokenPrivilegesT) SetPrivileges(ps []LuidAndAttributes) {
 	tp.PrivilegeCount = uint32(len(ps))
-	privileges := make([]LuidAndAttributes, len(ps))
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&privileges))
-	hdr.Data = uintptr(unsafe.Pointer(&tp.Privileges[0]))
-	copy(privileges, ps)
+	tp.SetPrivilegesSlice(ps)
 	return
 }
 

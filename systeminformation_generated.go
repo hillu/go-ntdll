@@ -305,6 +305,30 @@ type SystemHandleInformationT struct {
 	Handles [1]SystemHandleEntry
 }
 
+// HandlesSlice returns a slice over the elements of SystemHandleInformationT.Handles.
+//
+// Beware: The data is not copied out of SystemHandleInformationT. The size can usually be taken from an other member of the struct (SystemHandleInformationT).
+func (t *SystemHandleInformationT) HandlesSlice(size int) []SystemHandleEntry {
+	s := []SystemHandleEntry{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Handles[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetHandlesSlice copies s into the memory at SystemHandleInformationT.Handles.
+//
+// Beware: No bounds check is performed. Another member of the struct (SystemHandleInformationT) usually has to be set to the array size.
+func (t *SystemHandleInformationT) SetHandlesSlice(s []SystemHandleEntry) {
+	s1 := []SystemHandleEntry{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Handles[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // SystemPagefileInformationT has been derived from the SYSTEM_PAGEFILE_INFORMATION struct definition.
 type SystemPagefileInformationT struct {
 	NextEntryOffset uint32
@@ -320,7 +344,9 @@ type SystemModuleInformationT struct {
 	Modules      [1]SystemModule
 }
 
-// ModulesSlice returns a slice over the elements of SystemModuleInformationT.Modules
+// ModulesSlice returns a slice over the elements of SystemModuleInformationT.Modules.
+//
+// Beware: The data is not copied out of SystemModuleInformationT. The size can usually be taken from an other member of the struct (SystemModuleInformationT).
 func (t *SystemModuleInformationT) ModulesSlice(size int) []SystemModule {
 	s := []SystemModule{}
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
@@ -328,6 +354,18 @@ func (t *SystemModuleInformationT) ModulesSlice(size int) []SystemModule {
 	hdr.Len = size
 	hdr.Cap = size
 	return s
+}
+
+// SetModulesSlice copies s into the memory at SystemModuleInformationT.Modules.
+//
+// Beware: No bounds check is performed. Another member of the struct (SystemModuleInformationT) usually has to be set to the array size.
+func (t *SystemModuleInformationT) SetModulesSlice(s []SystemModule) {
+	s1 := []SystemModule{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Modules[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // OUT-parameter: SystemInformation, ReturnLength.

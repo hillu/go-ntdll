@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The MemoryInformationClass constants have been derived from the MEMORY_INFORMATION_CLASS enum definition.
 type MemoryInformationClass uint32
@@ -73,6 +74,30 @@ type MemoryBasicInformation64 struct {
 type MemoryWorkingSetInformationT struct {
 	NumberOfEntries *uint32
 	WorkingSetInfo  [1]MemoryWorkingSetBlock
+}
+
+// WorkingSetInfoSlice returns a slice over the elements of MemoryWorkingSetInformationT.WorkingSetInfo.
+//
+// Beware: The data is not copied out of MemoryWorkingSetInformationT. The size can usually be taken from an other member of the struct (MemoryWorkingSetInformationT).
+func (t *MemoryWorkingSetInformationT) WorkingSetInfoSlice(size int) []MemoryWorkingSetBlock {
+	s := []MemoryWorkingSetBlock{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.WorkingSetInfo[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetWorkingSetInfoSlice copies s into the memory at MemoryWorkingSetInformationT.WorkingSetInfo.
+//
+// Beware: No bounds check is performed. Another member of the struct (MemoryWorkingSetInformationT) usually has to be set to the array size.
+func (t *MemoryWorkingSetInformationT) SetWorkingSetInfoSlice(s []MemoryWorkingSetBlock) {
+	s1 := []MemoryWorkingSetBlock{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.WorkingSetInfo[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // MemoryRegionInformationT has been derived from the MEMORY_REGION_INFORMATION struct definition.

@@ -67,7 +67,7 @@ type FunctionDefinition struct {
 type StructMemberDefinition struct {
 	Name  string
 	Type  string
-	Slice bool
+	Array int
 }
 
 type StructDefinition struct {
@@ -311,13 +311,14 @@ func ParseStructDefinition(rd io.Reader) (*StructDefinition, error) {
 			m.Name = s.TokenText()
 			if r = s.Scan(); r == '[' {
 				if r = s.Scan(); r == scanner.Int {
-					if _, err := strconv.Atoi(s.TokenText()); err != nil {
+					if n, err := strconv.Atoi(s.TokenText()); err != nil {
 						return nil, err
+					} else {
+						m.Array = n
 					}
-					m.Type = "[" + s.TokenText() + "]" + m.Type
 				} else if r == scanner.Ident && s.TokenText() == "ANYSIZE_ARRAY" {
 					m.Type = m.Type
-					m.Slice = true
+					m.Array = 1
 				} else {
 					return nil, fmt.Errorf("%s: expecting number after '[', got '%s'", sd.OriginalName, s.TokenText())
 				}
@@ -551,7 +552,7 @@ funcs:
 structs:
 	for _, st := range structs {
 		for _, m := range st.Members {
-			if m.Slice {
+			if m.Array == 1 && !strings.HasPrefix(m.Name, "Reserved") {
 				fmt.Fprintln(buf, `import "reflect"`)
 				break structs
 			}
@@ -584,24 +585,25 @@ type %[1]s uint32; const (
 	}
 
 	for _, st := range structs {
-		accessors := []StructMemberDefinition{}
 		fmt.Fprintf(buf, `
 // %[1]s has been derived from the %[2]s struct definition.
 type %[1]s struct {
 `,
 			st.Name, st.OriginalName)
 		for _, m := range st.Members {
-			prefix := ""
-			if m.Slice {
-				prefix = "[1]"
-				accessors = append(accessors, m)
+			if m.Array > 0 {
+				fmt.Fprintf(buf, "%s [%d]%s\n", m.Name, m.Array, m.Type)
+			} else {
+				fmt.Fprintf(buf, "%s %s\n", m.Name, m.Type)
 			}
-			fmt.Fprintf(buf, "%s %s%s\n", m.Name, prefix, m.Type)
 		}
 		fmt.Fprint(buf, "}\n\n")
-		for _, m := range accessors {
-			fmt.Fprintf(buf, `
-// %[2]sSlice returns a slice over the elements of %[1]s.%[2]s
+		for _, m := range st.Members {
+			if m.Array == 1 && !strings.HasPrefix(m.Name, "Reserved") {
+				fmt.Fprintf(buf, `
+// %[2]sSlice returns a slice over the elements of %[1]s.%[2]s.
+//
+// Beware: The data is not copied out of %[1]s. The size can usually be taken from an other member of the struct (%[1]s).
 func (t *%[1]s) %[2]sSlice(size int) []%[3]s {
 	s := []%[3]s{}
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
@@ -610,7 +612,20 @@ func (t *%[1]s) %[2]sSlice(size int) []%[3]s {
 	hdr.Cap = size
 	return s
 }
+
+// Set%[2]sSlice copies s into the memory at %[1]s.%[2]s. 
+//
+// Beware: No bounds check is performed. Another member of the struct (%[1]s) usually has to be set to the array size.
+func (t *%[1]s) Set%[2]sSlice(s []%[3]s) {
+	s1 := []%[3]s{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.%[2]s[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
 `, st.Name, m.Name, m.Type)
+			}
 		}
 	}
 

@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The AtomInformationClass constants have been derived from the ATOM_INFORMATION_CLASS enum definition.
 type AtomInformationClass uint32
@@ -28,10 +29,58 @@ type AtomBasicInformationT struct {
 	Name       [1]uint16
 }
 
+// NameSlice returns a slice over the elements of AtomBasicInformationT.Name.
+//
+// Beware: The data is not copied out of AtomBasicInformationT. The size can usually be taken from an other member of the struct (AtomBasicInformationT).
+func (t *AtomBasicInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at AtomBasicInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (AtomBasicInformationT) usually has to be set to the array size.
+func (t *AtomBasicInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // AtomTableInformationT has been derived from the ATOM_TABLE_INFORMATION struct definition.
 type AtomTableInformationT struct {
 	NumberOfAtoms uint32
 	Atoms         [1]RtlAtom
+}
+
+// AtomsSlice returns a slice over the elements of AtomTableInformationT.Atoms.
+//
+// Beware: The data is not copied out of AtomTableInformationT. The size can usually be taken from an other member of the struct (AtomTableInformationT).
+func (t *AtomTableInformationT) AtomsSlice(size int) []RtlAtom {
+	s := []RtlAtom{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Atoms[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetAtomsSlice copies s into the memory at AtomTableInformationT.Atoms.
+//
+// Beware: No bounds check is performed. Another member of the struct (AtomTableInformationT) usually has to be set to the array size.
+func (t *AtomTableInformationT) SetAtomsSlice(s []RtlAtom) {
+	s1 := []RtlAtom{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Atoms[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // OUT-parameter: Atom.

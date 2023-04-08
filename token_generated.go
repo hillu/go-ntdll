@@ -100,7 +100,9 @@ type TokenGroupsT struct {
 	Groups     [1]SidAndAttributes
 }
 
-// GroupsSlice returns a slice over the elements of TokenGroupsT.Groups
+// GroupsSlice returns a slice over the elements of TokenGroupsT.Groups.
+//
+// Beware: The data is not copied out of TokenGroupsT. The size can usually be taken from an other member of the struct (TokenGroupsT).
 func (t *TokenGroupsT) GroupsSlice(size int) []SidAndAttributes {
 	s := []SidAndAttributes{}
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
@@ -110,13 +112,27 @@ func (t *TokenGroupsT) GroupsSlice(size int) []SidAndAttributes {
 	return s
 }
 
+// SetGroupsSlice copies s into the memory at TokenGroupsT.Groups.
+//
+// Beware: No bounds check is performed. Another member of the struct (TokenGroupsT) usually has to be set to the array size.
+func (t *TokenGroupsT) SetGroupsSlice(s []SidAndAttributes) {
+	s1 := []SidAndAttributes{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Groups[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // TokenPrivilegesT has been derived from the TOKEN_PRIVILEGES struct definition.
 type TokenPrivilegesT struct {
 	PrivilegeCount uint32
 	Privileges     [1]LuidAndAttributes
 }
 
-// PrivilegesSlice returns a slice over the elements of TokenPrivilegesT.Privileges
+// PrivilegesSlice returns a slice over the elements of TokenPrivilegesT.Privileges.
+//
+// Beware: The data is not copied out of TokenPrivilegesT. The size can usually be taken from an other member of the struct (TokenPrivilegesT).
 func (t *TokenPrivilegesT) PrivilegesSlice(size int) []LuidAndAttributes {
 	s := []LuidAndAttributes{}
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
@@ -124,6 +140,18 @@ func (t *TokenPrivilegesT) PrivilegesSlice(size int) []LuidAndAttributes {
 	hdr.Len = size
 	hdr.Cap = size
 	return s
+}
+
+// SetPrivilegesSlice copies s into the memory at TokenPrivilegesT.Privileges.
+//
+// Beware: No bounds check is performed. Another member of the struct (TokenPrivilegesT) usually has to be set to the array size.
+func (t *TokenPrivilegesT) SetPrivilegesSlice(s []LuidAndAttributes) {
+	s1 := []LuidAndAttributes{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Privileges[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // TokenOwnerT has been derived from the TOKEN_OWNER struct definition.

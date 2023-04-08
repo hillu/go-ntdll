@@ -8,11 +8,6 @@
 
 package ntdll
 
-import (
-	"reflect"
-	"unsafe"
-)
-
 /*
 func:
 NTSTATUS NtQuerySystemInformation(
@@ -365,10 +360,7 @@ typedef struct _SYSTEM_HANDLE_INFORMATION {
 */
 
 func (mi *SystemHandleInformationT) GetHandles() []SystemHandleEntry {
-	handles := make([]SystemHandleEntry, int(mi.Count))
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&handles))
-	hdr.Data = uintptr(unsafe.Pointer(&mi.Handles[0]))
-	return handles
+	return mi.HandlesSlice(int(mi.Count))
 }
 
 /*
@@ -391,8 +383,5 @@ typedef struct _SYSTEM_MODULE_INFORMATION {
 */
 
 func (mi *SystemModuleInformationT) GetModules() []SystemModule {
-	modules := make([]SystemModule, int(mi.ModulesCount))
-	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&modules))
-	hdr.Data = uintptr(unsafe.Pointer(&mi.Modules[0]))
-	return modules
+	return mi.ModulesSlice(int(mi.ModulesCount))
 }

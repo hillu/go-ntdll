@@ -4,6 +4,7 @@
 package ntdll
 
 import "unsafe"
+import "reflect"
 
 // The KeyInformationClass constants have been derived from the KEY_INFORMATION_CLASS enum definition.
 type KeyInformationClass uint32
@@ -82,6 +83,30 @@ type KeyBasicInformationT struct {
 	Name          [1]uint16
 }
 
+// NameSlice returns a slice over the elements of KeyBasicInformationT.Name.
+//
+// Beware: The data is not copied out of KeyBasicInformationT. The size can usually be taken from an other member of the struct (KeyBasicInformationT).
+func (t *KeyBasicInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at KeyBasicInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyBasicInformationT) usually has to be set to the array size.
+func (t *KeyBasicInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // KeyNodeInformationT has been derived from the KEY_NODE_INFORMATION struct definition.
 type KeyNodeInformationT struct {
 	LastWriteTime int64
@@ -90,6 +115,30 @@ type KeyNodeInformationT struct {
 	ClassLength   uint32
 	NameLength    uint32
 	Name          [1]uint16
+}
+
+// NameSlice returns a slice over the elements of KeyNodeInformationT.Name.
+//
+// Beware: The data is not copied out of KeyNodeInformationT. The size can usually be taken from an other member of the struct (KeyNodeInformationT).
+func (t *KeyNodeInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at KeyNodeInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyNodeInformationT) usually has to be set to the array size.
+func (t *KeyNodeInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // KeyFullInformationT has been derived from the KEY_FULL_INFORMATION struct definition.
@@ -107,10 +156,58 @@ type KeyFullInformationT struct {
 	Class           [1]uint16
 }
 
+// ClassSlice returns a slice over the elements of KeyFullInformationT.Class.
+//
+// Beware: The data is not copied out of KeyFullInformationT. The size can usually be taken from an other member of the struct (KeyFullInformationT).
+func (t *KeyFullInformationT) ClassSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Class[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetClassSlice copies s into the memory at KeyFullInformationT.Class.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyFullInformationT) usually has to be set to the array size.
+func (t *KeyFullInformationT) SetClassSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Class[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // KeyNameInformationT has been derived from the KEY_NAME_INFORMATION struct definition.
 type KeyNameInformationT struct {
 	NameLength uint32
 	Name       [1]uint16
+}
+
+// NameSlice returns a slice over the elements of KeyNameInformationT.Name.
+//
+// Beware: The data is not copied out of KeyNameInformationT. The size can usually be taken from an other member of the struct (KeyNameInformationT).
+func (t *KeyNameInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at KeyNameInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyNameInformationT) usually has to be set to the array size.
+func (t *KeyNameInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // KeyCachedInformationT has been derived from the KEY_CACHED_INFORMATION struct definition.
@@ -133,6 +230,30 @@ type KeyValueBasicInformationT struct {
 	Name       [1]uint16
 }
 
+// NameSlice returns a slice over the elements of KeyValueBasicInformationT.Name.
+//
+// Beware: The data is not copied out of KeyValueBasicInformationT. The size can usually be taken from an other member of the struct (KeyValueBasicInformationT).
+func (t *KeyValueBasicInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at KeyValueBasicInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyValueBasicInformationT) usually has to be set to the array size.
+func (t *KeyValueBasicInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // KeyValueFullInformationT has been derived from the KEY_VALUE_FULL_INFORMATION struct definition.
 type KeyValueFullInformationT struct {
 	TitleIndex uint32
@@ -143,12 +264,60 @@ type KeyValueFullInformationT struct {
 	Name       [1]uint16
 }
 
+// NameSlice returns a slice over the elements of KeyValueFullInformationT.Name.
+//
+// Beware: The data is not copied out of KeyValueFullInformationT. The size can usually be taken from an other member of the struct (KeyValueFullInformationT).
+func (t *KeyValueFullInformationT) NameSlice(size int) []uint16 {
+	s := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetNameSlice copies s into the memory at KeyValueFullInformationT.Name.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyValueFullInformationT) usually has to be set to the array size.
+func (t *KeyValueFullInformationT) SetNameSlice(s []uint16) {
+	s1 := []uint16{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Name[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
+}
+
 // KeyValuePartialInformationT has been derived from the KEY_VALUE_PARTIAL_INFORMATION struct definition.
 type KeyValuePartialInformationT struct {
 	TitleIndex uint32
 	Type       uint32
 	DataLength uint32
 	Data       [1]byte
+}
+
+// DataSlice returns a slice over the elements of KeyValuePartialInformationT.Data.
+//
+// Beware: The data is not copied out of KeyValuePartialInformationT. The size can usually be taken from an other member of the struct (KeyValuePartialInformationT).
+func (t *KeyValuePartialInformationT) DataSlice(size int) []byte {
+	s := []byte{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Data[0]))
+	hdr.Len = size
+	hdr.Cap = size
+	return s
+}
+
+// SetDataSlice copies s into the memory at KeyValuePartialInformationT.Data.
+//
+// Beware: No bounds check is performed. Another member of the struct (KeyValuePartialInformationT) usually has to be set to the array size.
+func (t *KeyValuePartialInformationT) SetDataSlice(s []byte) {
+	s1 := []byte{}
+	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&s1))
+	hdr.Data = uintptr(unsafe.Pointer(&t.Data[0]))
+	hdr.Len = len(s)
+	hdr.Cap = len(s)
+	copy(s1, s)
 }
 
 // OUT-parameter: KeyHandle, Disposition.
