@@ -27,7 +27,7 @@ const (
 var (
 	procNtCreateSection        = modntdll.NewProc("NtCreateSection")
 	procNtExtendSection        = modntdll.NewProc("NtExtendSection")
-	procNtwMapViewOfSection    = modntdll.NewProc("NtwMapViewOfSection")
+	procNtMapViewOfSection     = modntdll.NewProc("NtMapViewOfSection")
 	procNtOpenSection          = modntdll.NewProc("NtOpenSection")
 	procNtQuerySection         = modntdll.NewProc("NtQuerySection")
 	procNtUnmapViewOfSection   = modntdll.NewProc("NtUnmapViewOfSection")
@@ -93,7 +93,7 @@ func NtExtendSection(
 
 // INOUT-parameter: BaseAddress, SectionOffset, ViewSize.
 // *OPT-parameter: SectionOffset.
-func NtwMapViewOfSection(
+func NtMapViewOfSection(
 	SectionHandle Handle,
 	ProcessHandle Handle,
 	BaseAddress *byte,
@@ -105,7 +105,7 @@ func NtwMapViewOfSection(
 	AllocationType uint32,
 	Win32Protect uint32,
 ) NtStatus {
-	r0, _, _ := procNtwMapViewOfSection.Call(uintptr(SectionHandle),
+	r0, _, _ := procNtMapViewOfSection.Call(uintptr(SectionHandle),
 		uintptr(ProcessHandle),
 		uintptr(unsafe.Pointer(BaseAddress)),
 		uintptr(unsafe.Pointer(ZeroBits)),

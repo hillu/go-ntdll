@@ -26,7 +26,7 @@ NTSTATUS NtExtendSection (
 
 /*
 func:
-NTSTATUS NtwMapViewOfSection(
+NTSTATUS NtMapViewOfSection(
   _In_ HANDLE SectionHandle,
   _In_ HANDLE ProcessHandle,
   _Inout_ PVOID *BaseAddress,
