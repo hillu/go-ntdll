@@ -185,7 +185,8 @@ typedef struct _SYSTEM_PROCESS_INFORMATION {
 } SYSTEM_PROCESS_INFORMATION, *PSYSTEM_PROCESS_INFORMATION;
 */
 
-type Kpriority uint64
+// typedef LONG KPRIORITY;
+type Kpriority int32
 
 /*
 type:
